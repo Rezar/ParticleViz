@@ -115,6 +115,14 @@
       <button id="zoomIn">Zoom In</button>
       <button id="zoomOut">Zoom Out</button>
       <button id="recenterCanvas">Recenter</button>
+      <div class="control-group" style="margin-top:10px">
+        <label class="control-label">Rotate</label>
+        <input type="range" id="rotationSlider" min="0" max="360" value="0">
+        <div class="value-display">
+          <span>left</span>
+          <span>right</span>
+        </div>
+      </div>
     </div>
 
     <canvas id="drawingCanvas"></canvas>
@@ -164,7 +172,6 @@
       </div>
     </div>
   </div>
-
 
   <script src="external_libraries/gif.js"></script>
   <script src="utils/drag_and_drop.js"></script>

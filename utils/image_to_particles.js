@@ -109,6 +109,7 @@ function createParticlesFromImage(imageData) {
 
             const x = pixel.x * scale + offsetX;
             const y = pixel.y * scale + offsetY;
+            const z = Math.random() - 0.5; // Random z position for 3D effect
             
             // Use color caching
             const colorKey = `${pixel.r},${pixel.g},${pixel.b},${pixel.alpha}`;
@@ -129,7 +130,7 @@ function createParticlesFromImage(imageData) {
                 colorCache.set(colorKey, color);
             }
             
-            particles[i] = new Particle(x, y, color);
+            particles[i] = new Particle(x, y, z, color);
         }
         
         particlesArray = particles;
@@ -161,6 +162,7 @@ function createParticlesFromImage(imageData) {
             particlesArray.push(new Particle(
                 randomParticle.originalX + xOffset, 
                 randomParticle.originalY + yOffset, 
+                Math.random() - 0.5, // Random z position for 3D effect
                 color
             ));
         }
@@ -182,20 +184,23 @@ function handleImageUpload(event) {
     img.src = URL.createObjectURL(file);
 }
 
+// Global rotation variables
+let rotationAngle = 0;
+const rotationEasing = 0.1; // Adjust this value to control rotation smoothness (0-1)
+const rotationSlider = document.getElementById('rotationSlider');
+
 function animateParticles(currentTime) {
     if (!lastTime) lastTime = currentTime;
-    
     const deltaTime = currentTime - lastTime;
     
     if (deltaTime > frameInterval) {
         ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
         
-        // Use a traditional for loop for better performance
-        for (let i = 0; i < particlesArray.length; i++) {
-            const particle = particlesArray[i];
+        // Update and draw each particle
+        particlesArray.forEach(particle => {
             particle.update();
             particle.draw(mouseX, mouseY);
-        }
+        });
         
         lastTime = currentTime - (deltaTime % frameInterval);
     }
@@ -253,7 +258,9 @@ sizeRange.addEventListener('input', (e) => {
 shapeSelect.addEventListener('change', (e) => {
     particleShape = e.target.value;
 });
-
+rotationSlider.addEventListener('input', (e) => {
+    rotationAngle = parseInt(e.target.value);
+});
 drawingCanvas.addEventListener('wheel', (event) => zoom(event, drawingCanvas, ctxDrawing));
 particleCanvas.addEventListener('wheel', (event) => zoom(event, particleCanvas, ctxParticle));
 

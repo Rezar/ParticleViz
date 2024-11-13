@@ -38,7 +38,6 @@ let startY = 0;
 let panX = 0;
 let panY = 0;
 
-
 // Method to recenter the canvas
 function recenter() {
     ctxDrawing.setTransform(1, 0, 0, 1, 0, 0); // Reset transform to default
@@ -113,8 +112,6 @@ function pan(event) {
 
 // Modified redrawParticles function
 function redrawParticles() {
-    // Clear the entire transformed canvas space
-    const inverseScale = 1 / zoomScale;
     ctxParticle.save();
     ctxParticle.setTransform(1, 0, 0, 1, 0, 0);
     ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
