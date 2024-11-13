@@ -1,0 +1,331 @@
+:root {
+  --primary-color: #2563eb;
+  --background-color: #0f172a;
+  --text-color: #e2e8f0;
+  --panel-bg: rgba(30, 41, 59, 0.8);
+  --border-radius: 8px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#controls {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: var(--panel-bg);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  z-index: 10;
+}
+
+.control-group {
+  margin-bottom: 16px;
+}
+
+.control-group:last-child {
+  margin-bottom: 0;
+}
+
+.control-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.file-input-wrapper {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  margin-bottom: 20px;
+}
+
+.file-input-button {
+  width: 100%;
+  height: 40px;
+  background: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  color: white;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.file-input-button:hover {
+  background-color: #1d4ed8;
+}
+
+select,
+input[type="range"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: var(--border-radius);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23e2e8f0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 32px;
+}
+
+select:focus,
+input[type="range"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  height: 8px;
+  padding: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background-color: #1d4ed8;
+}
+
+.value-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+canvas {
+  display: block;
+}
+
+.title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: white;
+  text-align: center;
+}
+
+.dropzone {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 300px;
+  height: 200px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+}
+
+.dropzone.hidden {
+  display: none;
+}
+
+.dropzone-text {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 16px;
+}
+
+#fileInput {
+  display: none;
+}
+
+#progress-bar {
+  background-color: rgb(37, 99, 235);
+  border-radius: var(--border-radius);
+}
+
+#drawingCanvas {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius);
+  background: white;
+  display: none;
+}
+
+.drawing-controls {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
+  background: var(--panel-bg);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+  display: none;
+}
+
+.drawing-controls.active {
+  display: block;
+}
+
+.color-picker {
+  width: 100%;
+  height: 40px;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}
+
+.brush-size {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.drawing-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawing-buttons button {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 8px;
+  background: var(--primary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.drawing-buttons button:hover {
+  background-color: #1d4ed8;
+}
+
+.drawing-buttons button:last-child {
+  margin-bottom: 0;
+}
+
+.mode-select {
+  margin-bottom: 20px;
+}
+
+#particleCanvas {
+  z-index: 0;
+}
+
+#dropzone,
+#drawingControls {
+  z-index: 1;
+}
+
+#drawingCanvas {
+  z-index: 2;
+}
+
+.view-controls {
+  margin-top: 10px;
+  position: absolute;
+  right: 10px;
+  top: 2px;
+  display: block;
+  z-index: 1;
+}
+
+.view-controls button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.view-controls button:hover {
+  background-color: #0056b3;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none;
+  /* Hidden by default */
+  border-radius: var(--border-radius);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  z-index: 3;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  margin: 15% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  width: 80%;
+  /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
