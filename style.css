@@ -273,6 +273,7 @@ canvas {
 }
 
 .view-controls {
+  margin-right: 20px;
   margin-top: 10px;
   position: absolute;
   right: 10px;

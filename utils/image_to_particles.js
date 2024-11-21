@@ -5,6 +5,7 @@ const dispersionRangeInput = document.getElementById('dispersionRange');
 const particleCountInput = document.getElementById('particleCount');
 const sizeRange = document.getElementById('sizeRange');
 const shapeSelect = document.getElementById('shapeSelect');
+const animationEffect = document.getElementById('animationEffect');
 
 // Animation variables
 let particlesArray = [];
@@ -71,6 +72,7 @@ function collectDrawablePixels(imageData) {
 
 function createParticlesFromImage(imageData) {
     viewControls.style.display = 'block';
+    particleCanvas.style.display = 'block';
     inParticleMode = true;
     particlesArray = [];
     hideDropzone();
@@ -109,6 +111,7 @@ function createParticlesFromImage(imageData) {
 
             const x = pixel.x * scale + offsetX;
             const y = pixel.y * scale + offsetY;
+            const z = Math.random() - 0.5; // Random z position for 3D effect
             
             // Use color caching
             const colorKey = `${pixel.r},${pixel.g},${pixel.b},${pixel.alpha}`;
@@ -129,7 +132,7 @@ function createParticlesFromImage(imageData) {
                 colorCache.set(colorKey, color);
             }
             
-            particles[i] = new Particle(x, y, color);
+            particles[i] = new Particle(x, y, z, color);
         }
         
         particlesArray = particles;
@@ -161,6 +164,7 @@ function createParticlesFromImage(imageData) {
             particlesArray.push(new Particle(
                 randomParticle.originalX + xOffset, 
                 randomParticle.originalY + yOffset, 
+                Math.random() - 0.5, // Random z position for 3D effect
                 color
             ));
         }
@@ -182,20 +186,32 @@ function handleImageUpload(event) {
     img.src = URL.createObjectURL(file);
 }
 
+// Global rotation variables
+let rotationAngle = 0;
+const rotationSlider = document.getElementById('rotationSlider');
+let autoRotate = false;
+let autoRotationSpeed = 1; // Degrees per frame
+
+
 function animateParticles(currentTime) {
     if (!lastTime) lastTime = currentTime;
-    
     const deltaTime = currentTime - lastTime;
     
     if (deltaTime > frameInterval) {
         ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
         
-        // Use a traditional for loop for better performance
-        for (let i = 0; i < particlesArray.length; i++) {
-            const particle = particlesArray[i];
-            particle.update();
-            particle.draw(mouseX, mouseY);
+        // If auto-rotating, update the UI slider to match the current rotation
+        if (autoRotate) {
+            const currentRotation = (parseInt(rotationSlider.value) + autoRotationSpeed) % 360;
+            rotationSlider.value = currentRotation;
+            rotationAngle = currentRotation;
         }
+        
+        // Update and draw each particle
+        particlesArray.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
         
         lastTime = currentTime - (deltaTime % frameInterval);
     }
@@ -253,9 +269,20 @@ sizeRange.addEventListener('input', (e) => {
 shapeSelect.addEventListener('change', (e) => {
     particleShape = e.target.value;
 });
-
+rotationSlider.addEventListener('input', (e) => {
+    rotationAngle = parseInt(e.target.value);
+});
 drawingCanvas.addEventListener('wheel', (event) => zoom(event, drawingCanvas, ctxDrawing));
 particleCanvas.addEventListener('wheel', (event) => zoom(event, particleCanvas, ctxParticle));
-
+animationEffect.addEventListener('change', (e) => {
+    autoRotate = e.target.value === 'rotate';
+    if (autoRotate) {
+        // Disable the rotation slider when auto-rotating
+        rotationSlider.disabled = true;
+    } else {
+        // Enable the rotation slider when not auto-rotating
+        rotationSlider.disabled = false;
+    }
+});
 // Start the animation
 animationId = requestAnimationFrame(animateParticles);
