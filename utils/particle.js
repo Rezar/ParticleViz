@@ -3,7 +3,6 @@ class Particle {
         this.x = x;
         this.y = y;
         this.z = z;
-        this.baseColor = color;
         this.color = color;
         this.originalX = x - particleCanvas.width / 2; // Store relative to center
         this.originalY = y - particleCanvas.height / 2; // Store relative to center
@@ -14,29 +13,13 @@ class Particle {
         this.radius = Math.random() * dispersionRange;
         this.angularSpeedXY = (Math.random() - 0.5) * 0.02;
         this.angularSpeedXZ = (Math.random() - 0.5) * 0.02;
+        this.autoRotationAngle = 0;
     }
 
-    draw(mouseX, mouseY) {
+    draw() {
         // Calculate scale based on z position for depth effect
         const zScale = 1 + this.z / 1000; // Adjust divisor to control depth effect
         const adjustedSize = particleSize / zScale;
-
-        // Calculate distance to mouse for lighting effect
-        const dx = this.x - mouseX;
-        const dy = this.y - mouseY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Define the radius of influence for the lighting effect
-        const lightRadius = 100;
-
-        // Calculate lighting factor based on distance
-        let lightFactor = 0;
-        if (distance < lightRadius) {
-            lightFactor = (1 - distance / lightRadius) * 0.7; // Max 70% lighter
-        }
-
-        // Update current color based on distance to mouse
-        this.color = lightFactor > 0 ? this.lightenColor(this.baseColor, lightFactor) : this.baseColor;
 
         // Drawing logic
         ctxParticle.save();
@@ -96,8 +79,16 @@ class Particle {
         const orbitY = this.originalY + Math.sin(this.angleXY) * this.radius;
         const orbitZ = this.originalZ + Math.sin(this.angleXZ) * this.radius;
     
-        // Apply rotation around Y-axis based on rotationAngle
-        const angle = (rotationAngle * Math.PI) / 180; // Convert degrees to radians
+        // Use either auto-rotation or slider rotation
+        let angle;
+        if (autoRotate) {
+            this.autoRotationAngle = (this.autoRotationAngle + autoRotationSpeed) % 360;
+            angle = (this.autoRotationAngle * Math.PI) / 180;
+        } else {
+            angle = (rotationAngle * Math.PI) / 180;
+        }
+    
+        // Apply rotation
         const rotatedX = orbitX * Math.cos(angle) + orbitZ * Math.sin(angle);
         const rotatedZ = -orbitX * Math.sin(angle) + orbitZ * Math.cos(angle);
     
@@ -118,17 +109,5 @@ class Particle {
         // Smoothly adjust original Z position for dispersion effects
         const targetOriginalZ = this.originalZ + (Math.random() - 0.5) * dispersionRange * 0.05;
         this.originalZ += (targetOriginalZ - this.originalZ) * 0.02;
-    }    
-    
-
-    lightenColor(baseColor, lightFactor) {
-        // Extract RGB values from baseColor string
-        const color = baseColor.match(/\d+/g).map(Number);
-        
-        // Calculate new RGB values by adding a percentage of the distance factor
-        const newColor = color.map(c => Math.min(255, Math.floor(c + (255 - c) * lightFactor)));
-
-        // Return the new color in rgba format (with same alpha)
-        return `rgba(${newColor[0]}, ${newColor[1]}, ${newColor[2]}, 1)`;
     }
 }

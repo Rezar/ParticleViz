@@ -26,10 +26,6 @@ function zoom(event, context) {
     // Redraw particles after zooming
     redrawParticles();
 }
-// Add event listeners for zooming
-drawingCanvas.addEventListener('wheel', (event) => zoom(event, ctxDrawing));
-particleCanvas.addEventListener('wheel', (event) => zoom(event, ctxParticle));
-
 
 // Variables to track panning
 let isPanning = false;
@@ -118,5 +114,5 @@ function redrawParticles() {
     ctxParticle.restore();
 
     // Redraw particles with current transformation
-    particlesArray.forEach(particle => particle.draw(mouseX, mouseY));
+    particlesArray.forEach(particle => particle.draw());
 }

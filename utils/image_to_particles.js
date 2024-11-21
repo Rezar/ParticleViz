@@ -5,6 +5,7 @@ const dispersionRangeInput = document.getElementById('dispersionRange');
 const particleCountInput = document.getElementById('particleCount');
 const sizeRange = document.getElementById('sizeRange');
 const shapeSelect = document.getElementById('shapeSelect');
+const animationEffect = document.getElementById('animationEffect');
 
 // Animation variables
 let particlesArray = [];
@@ -71,6 +72,7 @@ function collectDrawablePixels(imageData) {
 
 function createParticlesFromImage(imageData) {
     viewControls.style.display = 'block';
+    particleCanvas.style.display = 'block';
     inParticleMode = true;
     particlesArray = [];
     hideDropzone();
@@ -186,8 +188,10 @@ function handleImageUpload(event) {
 
 // Global rotation variables
 let rotationAngle = 0;
-const rotationEasing = 0.1; // Adjust this value to control rotation smoothness (0-1)
 const rotationSlider = document.getElementById('rotationSlider');
+let autoRotate = false;
+let autoRotationSpeed = 1; // Degrees per frame
+
 
 function animateParticles(currentTime) {
     if (!lastTime) lastTime = currentTime;
@@ -196,10 +200,17 @@ function animateParticles(currentTime) {
     if (deltaTime > frameInterval) {
         ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
         
+        // If auto-rotating, update the UI slider to match the current rotation
+        if (autoRotate) {
+            const currentRotation = (parseInt(rotationSlider.value) + autoRotationSpeed) % 360;
+            rotationSlider.value = currentRotation;
+            rotationAngle = currentRotation;
+        }
+        
         // Update and draw each particle
         particlesArray.forEach(particle => {
             particle.update();
-            particle.draw(mouseX, mouseY);
+            particle.draw();
         });
         
         lastTime = currentTime - (deltaTime % frameInterval);
@@ -263,6 +274,15 @@ rotationSlider.addEventListener('input', (e) => {
 });
 drawingCanvas.addEventListener('wheel', (event) => zoom(event, drawingCanvas, ctxDrawing));
 particleCanvas.addEventListener('wheel', (event) => zoom(event, particleCanvas, ctxParticle));
-
+animationEffect.addEventListener('change', (e) => {
+    autoRotate = e.target.value === 'rotate';
+    if (autoRotate) {
+        // Disable the rotation slider when auto-rotating
+        rotationSlider.disabled = true;
+    } else {
+        // Enable the rotation slider when not auto-rotating
+        rotationSlider.disabled = false;
+    }
+});
 // Start the animation
 animationId = requestAnimationFrame(animateParticles);
