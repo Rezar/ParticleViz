@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.9.0"
+  }
+}
