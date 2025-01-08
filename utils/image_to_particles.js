@@ -23,6 +23,73 @@ let lastTime = 0;
 const targetFPS = 60;
 const frameInterval = 1000 / targetFPS;
 
+// Event listener for Load Config - Natasya Liew
+document.getElementById('loadConfigButton').addEventListener('click', () => {
+    const loadConfigInput = document.getElementById('loadSettingConfigJSON');
+    if (loadConfigInput.files.length === 0) {
+        alert('Please select a JSON file first.');
+        return;
+    }
+    const file = loadConfigInput.files[0];
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const config = JSON.parse(e.target.result);
+
+            // Apply settings to the controls
+            document.getElementById('colorSelect').value = config.colorMode || 'original';
+            document.getElementById('speedRange').value = config.particleSpeed || 1;
+            document.getElementById('dispersionRange').value = config.dispersionRange || 50;
+            document.getElementById('particleCount').value = config.particleCount || 1000;
+            document.getElementById('sizeRange').value = config.particleSize || 2;
+            document.getElementById('shapeSelect').value = config.particleShape || 'circle';
+            document.getElementById('animationEffect').value = config.animationEffect || 'none';
+
+            // Update global variables
+            particleSpeed = parseFloat(config.particleSpeed) || 1;
+            dispersionRange = parseFloat(config.dispersionRange) || 50;
+            particleCount = parseInt(config.particleCount, 10) || 1000;
+            particleSize = parseFloat(config.particleSize) || 2;
+            particleShape = config.particleShape || 'circle';
+            colorMode = config.colorMode || 'original';
+
+            // Recreate particles if image data exists
+            if (lastImageData) {
+                createParticlesFromImage(lastImageData);
+            }
+            alert('Config loaded successfully!');
+        } catch (error) {
+            alert('Invalid JSON configuration file.');
+            console.error(error);
+        }
+    };
+
+    reader.readAsText(file);
+});
+
+// Event listener for Save Config - Natasya Liew
+document.getElementById('saveConfigButton').addEventListener('click', () => {
+    const config = {
+        colorMode: document.getElementById('colorSelect').value,
+        particleSpeed: parseFloat(document.getElementById('speedRange').value),
+        dispersionRange: parseFloat(document.getElementById('dispersionRange').value),
+        particleCount: parseInt(document.getElementById('particleCount').value, 10),
+        particleSize: parseFloat(document.getElementById('sizeRange').value),
+        particleShape: document.getElementById('shapeSelect').value,
+        animationEffect: document.getElementById('animationEffect').value,
+    };
+
+    const jsonConfig = JSON.stringify(config, null, 2);
+    const blob = new Blob([jsonConfig], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'config.json';
+    link.click();
+
+    alert('Config saved successfully!');
+});
+
 // Optimized debounce with a shorter delay
 function debounce(func, wait) {
     let timeout;

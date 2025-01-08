@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+  <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
   <title>Image to Particle Animation</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -14,12 +16,18 @@
       <h1 class="title">Particle Animation</h1>
 
       <div class="control-group mode-select">
-        <label class="control-label">Input Mode</label>
+        <label class="control-label">Image Input</label>
         <select id="inputModeSelect">
           <option value="upload">Upload Image</option>
           <option value="draw">Draw Image</option>
         </select>
       </div>
+
+      <div class="control-group mode-select"> <!-- Added feature: Load Config Settings -->
+        <label>Load Settings Config JSON:</label>
+        <input type="file" id="loadSettingConfigJSON" accept=".json" />
+        <button id="loadConfigButton" class="file-input-button">Load Config</button>
+      </div>      
 
       <div class="control-group">
         <label class="control-label">Animation Effect</label>
@@ -83,15 +91,23 @@
         </select>
       </div>
 
+      <div class="control-group"> <!-- Added feature: Save Config Setting -->
+        <label for="saveConfigButton" class="save-config-label">
+          Save Settings Config JSON:
+        </label>
+        <button id="saveConfigButton" class="save-config-button">
+          Save Config
+        </button>
+      </div>      
+
       <div class="control-group">
         <div class="file-input-wrapper">
           <button id="createGIFButton" class="file-input-button">
-            Create GIF
+            Create Export
           </button>
           <input type="file" id="fileInput" accept="image/*" style="display: none;" />
         </div>
       </div>
-
     </div>
 
     <div class="drawing-controls" id="drawingControls">
@@ -105,6 +121,7 @@
       </div>
       <div class="drawing-buttons">
         <button id="drawingModeSwitch">Polygon Mode: OFF</button>
+        <button id="saveImage">Save Image</button> <!-- Added save button -->
         <button id="clearCanvas">Clear Canvas</button>
         <button id="convertDrawing">Convert to Particles</button>
       </div>
@@ -150,8 +167,15 @@
           <select id="exportFormatSelect">
             <option value="gif">GIF</option>
             <option value="html">HTML</option>
+            <option value="webm">WEBM</option><!-- Added webm feature to convert to other media -->
+            <option value="mp4">MP4</option><!-- Added mp4 feature -->
+            <option value="frames">Frames (Images)</option><!-- Added save frames feature to use other software to convert to other media -->
           </select>
         </div>
+        <div class="control-group">
+          <label class="control-label">Duration (Seconds)</label><!-- Added feature: control duration recorded -->
+          <input type="number" id="durationInput" min="1" max="30" value="4" step="1">
+        </div>        
         <div class="control-group">
           <label class="control-label">Export For</label>
           <select id="exportDeviceSelect">
@@ -160,7 +184,7 @@
             <option value="smartwatch">Smartwatch</option>
           </select>
         </div> 
-        <button id="exportButton" class="file-input-button">Export</button>
+        <button id="exportButton" class="file-input-button">Export Now</button>
         <div id="progress-bar">
           <div id="progress-bar-fill"></div>
         </div>
@@ -173,6 +197,9 @@
   </div>
 
   <script src="external_libraries/gif.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/webm-media-recorder@1.0.0/dist/webm-media-recorder.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script src="utils/drag_and_drop.js"></script>
   <script src="utils/particle.js"></script>
   <script src="utils/drawing.js"></script>

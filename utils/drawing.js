@@ -10,6 +10,7 @@ const convertDrawingBtn = document.getElementById('convertDrawing');
 const drawingModeSwitch = document.getElementById('drawingModeSwitch'); // Polygon drawing mode switch button
 const ctxDrawing = drawingCanvas.getContext('2d');
 const ctxParticle = particleCanvas.getContext('2d');
+const saveImageButton = document.getElementById('saveImage');
 
 let isDrawing = false;
 let lastX = 0;
@@ -26,6 +27,9 @@ particleCanvas.addEventListener('mousemove', (e) => {
     mouseX = e.clientX - rect.left;
     mouseY = e.clientY - rect.top;
 });
+
+// Event listener for Save Image button
+saveImageButton.addEventListener('click', saveDrawingAsImage);
 
 // Setup drawing canvas
 function setupDrawingCanvas() {
@@ -106,6 +110,19 @@ function handleInputModeChange() {
         drawingCanvas.style.display = 'none';
         drawingControls.classList.remove('active');
     }
+}
+
+// Save Drawing - Natasya Liew
+function saveDrawingAsImage() {
+    const dataURL = drawingCanvas.toDataURL('image/png'); 
+    const link = document.createElement('a'); 
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    link.href = dataURL;
+    link.download = `drawing-${timestamp}.png`; 
+    link.click(); 
+
+    // Show feedback
+    alert('Drawing saved successfully!');
 }
 
 // Switch between free drawing and polygon drawing
