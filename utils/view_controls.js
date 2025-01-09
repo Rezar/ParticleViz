@@ -26,10 +26,6 @@ function zoom(event, context) {
     // Redraw particles after zooming
     redrawParticles();
 }
-// Add event listeners for zooming
-drawingCanvas.addEventListener('wheel', (event) => zoom(event, ctxDrawing));
-particleCanvas.addEventListener('wheel', (event) => zoom(event, ctxParticle));
-
 
 // Variables to track panning
 let isPanning = false;
@@ -37,7 +33,6 @@ let startX = 0;
 let startY = 0;
 let panX = 0;
 let panY = 0;
-
 
 // Method to recenter the canvas
 function recenter() {
@@ -113,13 +108,11 @@ function pan(event) {
 
 // Modified redrawParticles function
 function redrawParticles() {
-    // Clear the entire transformed canvas space
-    const inverseScale = 1 / zoomScale;
     ctxParticle.save();
     ctxParticle.setTransform(1, 0, 0, 1, 0, 0);
     ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
     ctxParticle.restore();
 
     // Redraw particles with current transformation
-    particlesArray.forEach(particle => particle.draw(mouseX, mouseY));
+    particlesArray.forEach(particle => particle.draw());
 }

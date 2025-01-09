@@ -1,0 +1,355 @@
+/* Base Layout */
+:root {
+    --primary-color: #6366f1;
+    --primary-hover: #4f46e5;
+    --bg-dark: #1a1a1a;
+    --bg-darker: #0f0f0f;
+    --text-light: #f3f4f6;
+    --text-dim: #9ca3af;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.2);
+    --transition-speed: 0.2s;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background: var(--bg-darker);
+    color: var(--text-light);
+    overflow: hidden;
+}
+
+#app {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
+}
+
+/* Navigation */
+.navigation {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg-dark);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.navigation button {
+    padding: 0.5rem 1.5rem;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 0.375rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: background var(--transition-speed);
+}
+
+.navigation button:hover {
+    background: var(--primary-hover);
+}
+
+/* Page Layout */
+.page {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    height: calc(100vh - 4rem);
+}
+
+.page.hidden {
+    display: none;
+}
+
+/* Controls Panel */
+.controls {
+    padding: 1.5rem;
+    background: var(--bg-dark);
+    border-right: 1px solid var(--border-color);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--bg-dark);
+}
+
+.controls::-webkit-scrollbar {
+    width: 6px;
+}
+
+.controls::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+.controls::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 3px;
+}
+
+/* Control Groups */
+.control-group {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+}
+
+.control-group button {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    background: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+
+.control-group button:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+}
+
+/* Input Styles */
+input[type="range"] {
+    width: 90%;
+    margin: 0.5rem 0;
+}
+
+input[type="color"] {
+    width: 90%;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 0.375rem;
+}
+
+input[type="file"] {
+    width: 90%;
+    padding: 0.5rem;
+    background: var(--bg-darker);
+    border-radius: 0.375rem;
+    color: var(--text-light);
+}
+
+select {
+    width: 90%;
+    padding: 0.5rem;
+    background: var(--bg-darker);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+}
+
+#drawingCanvasContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+#svgPreview {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* Particle Page Specific */
+#tsparticles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #323031;
+    z-index: 0;
+}
+
+/* Export Page Specific */
+.html-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.recording-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+#fixedSizeInputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+#fixedSizeInputs.hidden {
+    display: none;
+}
+
+#exportPreview {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Canvas Container */
+#canvas {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Add to your styles.css */
+.instructions {
+    margin: 0.5rem 0;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+}
+
+.instructions p {
+    margin: 0.25rem 0;
+}
+
+.drawing-tooltip {
+    position: fixed;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    z-index: 1000;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.drawing-tooltip.hidden {
+    opacity: 0;
+}
+
+/* Export Page Specific Styles */
+.html-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.html-settings label {
+    margin-bottom: 0.25rem;
+    color: var(--text-dim);
+}
+
+.recording-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.setting-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+#fixedSizeInputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+}
+
+#fixedSizeInputs.hidden {
+    display: none;
+}
+
+#fixedSizeInputs input {
+    width: 100%;
+    padding: 0.5rem;
+    background: var(--bg-darker);
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    color: var(--text-light);
+}
+
+.export-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.export-buttons button {
+    width: 100%;
+}
+
+#exportPreview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-indicator {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 0.5rem;
+    color: white;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#canvasContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-darker);
+    overflow: hidden;
+}
+
+#tsparticlesPreview {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#exportPage {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    height: calc(100vh - 4rem);
+}

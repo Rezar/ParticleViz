@@ -1,7 +1,7 @@
 // GIF Recording variables
 let isRecording = false;
 let recordingStartTime = 0;
-const RECORDING_DURATION = 4; // Fixed 4 second duration
+let RECORDING_DURATION = 4; // Change to allow flexible duration
 const createGIFButton = document.getElementById('createGIFButton');
 const exportButton = document.getElementById('exportButton');
 const recordingStatus = document.getElementById('recordingStatus');
@@ -71,6 +71,9 @@ function getDimensions(device, originalWidth, originalHeight) {
 
   function startRecording() {
     if (isRecording) return;
+
+    const durationInput = document.getElementById('durationInput').value;
+    RECORDING_DURATION = parseInt(durationInput, 10); // Update duration
   
     const exportDevice = document.getElementById('exportDeviceSelect').value;
     const dimensions = getDimensions(
@@ -272,10 +275,111 @@ function startExporting() {
         a.click();
         URL.revokeObjectURL(htmlUrl);
       };
-    }
+    } else if (exportFormat === 'webm') {
+      const stream = particleCanvas.captureStream(30); // 30 FPS
+      const recorder = new MediaRecorder(stream, {
+        mimeType: 'video/webm',
+        videoBitsPerSecond: 5000000,
+      });
+
+      const chunks = [];
+      recorder.ondataavailable = (event) => chunks.push(event.data);
+      recorder.onstop = () => {
+        const webmBlob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(webmBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `particle-animation-${exportDevice}.webm`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      recorder.start();
+      setTimeout(() => recorder.stop(), RECORDING_DURATION * 1000);
+    } else if (exportFormat === 'mp4') {
+      const mimeType = MediaRecorder.isTypeSupported('video/mp4') 
+        ? 'video/mp4' 
+        : 'video/webm'; // Fallback to WebM if MP4 is not supported
+    
+      const stream = particleCanvas.captureStream(30); // 30 FPS
+      const recorder = new MediaRecorder(stream, {
+        mimeType: mimeType,
+        videoBitsPerSecond: 5000000,
+      });
+    
+      const chunks = [];
+      recorder.ondataavailable = (event) => chunks.push(event.data);
+      recorder.onstop = () => {
+        const videoBlob = new Blob(chunks, { type: mimeType });
+        const url = URL.createObjectURL(videoBlob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `particle-animation-${exportDevice}.${mimeType === 'video/mp4' ? 'mp4' : 'webm'}`;
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+    
+      recorder.start();
+      setTimeout(() => recorder.stop(), RECORDING_DURATION * 1000);    
+    } else if (exportFormat === 'frames') {
+      const exportDevice = document.getElementById('exportDeviceSelect').value;
+      const dimensions = getDimensions(
+        exportDevice, 
+        particleCanvas.width, 
+        particleCanvas.height
+      );
+    
+      const zip = new JSZip();
+      const frameCanvas = document.createElement('canvas');
+      frameCanvas.width = dimensions.isSmartwatch ? dimensions.containerWidth : dimensions.width;
+      frameCanvas.height = dimensions.isSmartwatch ? dimensions.containerHeight : dimensions.height;
+      const frameCtx = frameCanvas.getContext('2d');
+    
+      let frameIndex = 0;
+      const totalFrames = Math.floor(RECORDING_DURATION * measuredFPS);
+    
+      function saveFrame() {
+        if (frameIndex >= totalFrames) {
+          // When all frames are captured, generate ZIP
+          zip.generateAsync({ type: 'blob' }).then((content) => {
+            const zipUrl = URL.createObjectURL(content);
+            const a = document.createElement('a');
+            a.href = zipUrl;
+            a.download = `frames-${exportDevice}.zip`;
+            a.click();
+            URL.revokeObjectURL(zipUrl);
+          });
+          return;
+        }
+    
+        const elapsed = frameIndex / measuredFPS;
+        const delay = 1000 / measuredFPS;
+    
+        // Draw frame on temporary canvas
+        frameCtx.fillStyle = dimensions.isSmartwatch ? '#000000' : 'transparent';
+        frameCtx.fillRect(0, 0, frameCanvas.width, frameCanvas.height);
+        if (dimensions.isSmartwatch) {
+          const x = Math.floor((dimensions.containerWidth - dimensions.width) / 2);
+          const y = Math.floor((dimensions.containerHeight - dimensions.height) / 2);
+          frameCtx.drawImage(particleCanvas, x, y, dimensions.width, dimensions.height);
+        } else {
+          frameCtx.drawImage(particleCanvas, 0, 0, dimensions.width, dimensions.height);
+        }
+    
+        // Convert canvas to blob and add to ZIP
+        frameCanvas.toBlob((blob) => {
+          zip.file(`frame-${frameIndex + 1}.png`, blob);
+          frameIndex++;
+          setTimeout(saveFrame, delay);
+        });
+      }
+    
+      saveFrame(); // Start saving frames
+      }
+      
 
     // Reset UI
-    exportButton.textContent = 'Create GIF';
+    exportButton.textContent = 'Export Now';
     exportButton.style.backgroundColor = '#2563eb';
     exportButton.disabled = false;
     progressBar.style.display = 'none';

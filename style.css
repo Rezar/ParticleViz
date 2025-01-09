@@ -43,6 +43,8 @@ html {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 300px;
   z-index: 10;
+  max-height: calc(100vh - 40px); /* Leave space for padding/margin */
+  overflow-y: auto; /* Enable scrolling */
 }
 
 .control-group {
@@ -273,6 +275,7 @@ canvas {
 }
 
 .view-controls {
+  margin-right: 20px;
   margin-top: 10px;
   position: absolute;
   right: 10px;
@@ -328,4 +331,40 @@ canvas {
   color: black;
   text-decoration: none;
   cursor: pointer;
+}
+
+/* Save Config Button Styles */
+.save-config-button {
+  background-color: #10b981; /* Vibrant green for Save Config */
+  color: white;
+  border: none;
+  border-radius: 8px; /* Match Export button's rounded corners */
+  padding: 12px 24px; /* Match Export button's padding */
+  font-size: 15px; /* Match font size */
+  font-weight: bold; /* Match text weight */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease-in-out;
+}
+
+.save-config-button:hover {
+  background-color: #059669; /* Darker green on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}
+
+.save-config-button:active {
+  background-color: #047857; /* Even darker green on click */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  transform: translateY(0);
+}
+
+.save-config-label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  color: #e2e8f0; /* Match other labels */
 }

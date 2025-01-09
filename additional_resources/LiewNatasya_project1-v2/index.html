@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle Animation System</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Third-party libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tsparticles/2.12.0/tsparticles.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles@1.37.5/tsparticles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tsparticles-plugin-polygon-mask@1.37.5/tsparticles.plugin.polygonMask.min.js"></script>
+
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
+    <meta http-equiv="Cross-Origin-Embedder-Policy" content="require-corp">
+    
+    <!-- Media handling scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gifshot/0.3.2/gifshot.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/webm-media-recorder@1.0.0/dist/webm-media-recorder.min.js"></script>
+
+
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="navigation">
+            <button id="drawingBtn">Drawing & SVG</button>
+            <button id="particlesBtn">Particle Settings</button>
+            <button id="exportBtn">Export Options</button>
+        </nav>
+
+        <!-- Drawing & SVG Page -->
+        <div id="drawingPage" class="page">
+            <div class="controls">
+                <div class="control-group">
+                    <button id="startDrawingBtn">Start Drawing</button>
+                    <div class="instructions">
+                        <p>Click to add points</p>
+                        <p>Double-click or close the shape to complete</p>
+                        <p>Don't forget to save your svg for the particles where you load the svg you'd like to use</p>
+                    </div>
+                    <button id="clearDrawingBtn">Clear Drawing</button>
+                    <button id="convertTo3DBtn">Convert to 3D</button>
+                    <button id="convertTo2DBtn">Convert to 2D</button>
+                    <button id="saveSVGBtn">Save SVG</button>
+                </div>
+
+                <div class="control-group">
+                    <label>Upload SVG:</label>
+                    <input type="file" id="svgUpload" accept=".svg">
+                </div>
+
+                <div class="control-group">
+                    <label>Number of Layers: <span id="layerCountDisplay">3</span></label>
+                    <input type="range" id="layerCount" min="1" max="10" value="3">
+                </div>                
+
+                <div class="control-group">
+                    <label>3D Depth: <span id="depthDisplay">50</span></label>
+                    <input type="range" id="depthValue" min="0" max="100" value="50">
+                </div>
+            </div>
+            <div id="canvas">
+                <canvas id="drawingCanvas"></canvas>
+                <div id="svgPreview"></div>
+            </div>
+        </div>
+
+        <!-- Particles Setting Page -->
+        <div id="particlesPage" class="page hidden">
+            <div class="controls">
+                <div class="control-group">
+                    <input type="file" id="svgFile" accept="image/svg+xml" style="display:none" />
+                    <button onclick="document.getElementById('svgFile').click()">Load SVG</button>
+                    
+                    <input type="file" id="settingsFile" accept="application/json" style="display:none" />
+                    <button onclick="document.getElementById('settingsFile').click()">Load Settings JSON</button>
+                </div>
+                
+                <div class="control-group">
+                    <label>Note:</label>
+                    <p>Currently, only 2D images are supported for particle visualization.</p>
+                </div>
+                
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="is3D">
+                        Enable 3D
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label>Number of Particles: <span id="particleCountValue">100</span></label>
+                    <input type="range" id="particleCount" min="1" max="1000" value="100">
+                </div>
+
+                <div class="control-group">
+                    <label>Particle Color:</label>
+                    <input type="color" id="particleColor" value="#ff0000">
+                    <label>
+                        <input type="checkbox" id="colorAnimation" checked>
+                        Animate Color
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label>Speed: <span id="speedValue">1</span></label>
+                    <input type="range" id="speed" min="0" max="10" step="0.1" value="1">
+                </div>
+
+                <div class="control-group">
+                    <label>Particle Size: <span id="sizeValue">2</span></label>
+                    <input type="range" id="size" min="1" max="20" value="2">
+                </div>
+
+                <div class="control-group">
+                    <label>Opacity: <span id="opacityValue">0.5</span></label>
+                    <input type="range" id="opacity" min="0" max="1" step="0.1" value="0.5">
+                </div>
+
+                <div class="control-group">
+                    <label>Background Color:</label>
+                    <input type="color" id="backgroundColor" value="#000000">
+                </div>
+
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="enableLinks" checked>
+                        Enable Links
+                    </label>
+                </div>
+
+                <div class="control-group">
+                    <label>Link Color:</label>
+                    <input type="color" id="linkColor" value="#ffffff">
+                </div>
+
+                <div class="control-group">
+                    <label>Pattern:</label>
+                    <select id="pattern">
+                        <option value="none">None</option>
+                        <option value="wave">Wave</option>
+                        <option value="spiral">Spiral</option>
+                        <option value="flower">Flower</option>
+                        <option value="vortex">Vortex</option>
+                        <option value="pulse">Pulse</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Pattern Speed: <span id="patternSpeedValue">1</span></label>
+                    <input type="range" id="patternSpeed" min="0.1" max="5" step="0.1" value="1">
+                </div>
+
+                <div class="control-group">
+                    <label>Pattern Scale: <span id="patternScaleValue">1</span></label>
+                    <input type="range" id="patternScale" min="0.1" max="5" step="0.1" value="1">
+                </div>
+
+                <div class="control-group">
+                    <label>Orientation: <span id="orientationValue">0</span>°</label>
+                    <input type="range" id="orientation" min="0" max="360" value="0">
+                </div>
+
+                <div class="control-group">
+                    <label>Rotation Speed: <span id="rotationSpeedValue">0</span></label>
+                    <input type="range" id="rotationSpeed" min="0" max="10" value="0">
+                </div>
+
+                <div class="control-group">
+                    <label>Direction Angle: <span id="directionAngleValue">0</span>°</label>
+                    <input type="range" id="directionAngle" min="0" max="360" value="0">
+                </div>
+
+                <div class="control-group">
+                    <label>Particle Shape:</label>
+                    <select id="shape">
+                        <option value="circle">Circle</option>
+                        <option value="square">Square</option>
+                        <option value="triangle">Triangle</option>
+                        <option value="star">Star</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Blend Mode:</label>
+                    <select id="blendMode">
+                        <option value="normal">Normal</option>
+                        <option value="multiply">Multiply</option>
+                        <option value="screen">Screen</option>
+                        <option value="overlay">Overlay</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <label>Blur: <span id="blurValue">0</span></label>
+                    <input type="range" id="blur" min="0" max="20" value="0">
+                </div>
+
+                <div class="control-group">
+                    <label>Zoom: <span id="zoomValue">1</span></label>
+                    <input type="range" id="zoom" min="0.1" max="5" step="0.1" value="1">
+                </div>
+
+                <div class="control-group">
+                    <label>Shading:</label>
+                    <select id="shade">
+                        <option value="none">None</option>
+                        <option value="glow">Glow</option>
+                        <option value="shadow">Shadow</option>
+                        <option value="neon">Neon</option>
+                    </select>
+                </div>
+
+                <div class="control-group">
+                    <button onclick="app.particles.saveSettings()">Save Settings</button>
+                </div>
+            </div>
+            <div id="canvas">
+                <div id="tsparticles"></div>
+            </div>
+        </div>
+
+        <!-- Export Page -->
+        <div id="exportPage" class="page hidden">
+            <div class="controls">                
+                <div class="control-group">
+                    <label>Load SVG:</label>
+                    <input type="file" id="loadSVG" accept=".svg" />
+                    <label>Load Settings Config JSON:</label>
+                    <input type="file" id="loadSettingConfigJSON" accept=".json" />
+                    <button id="validateExports">Validate Files</button> 
+                </div>
+
+                <!-- HTML Export Section -->
+                <div class="control-group">
+                    <h3>HTML Export</h3>
+                    <div class="html-settings">
+                        <label>Container Size:</label>
+                        <select id="containerSize">
+                            <option value="desktop">Desktop (1920x1080)</option>
+                            <option value="mobile">Mobile (390x844)</option>
+                            <option value="watch">Watch (184x224)</option>
+                        </select>
+        
+                        <div id="fixedSizeInputs" class="hidden">
+                            <div>
+                                <label>Width:</label>
+                                <input type="number" id="containerWidth" value="1920">
+                            </div>
+                            <div>
+                                <label>Height:</label>
+                                <input type="number" id="containerHeight" value="1080">
+                            </div>
+                        </div>
+        
+                        <label>Position:</label>
+                        <select id="backgroundPosition">
+                            <option value="fixed">Fixed</option>
+                            <option value="absolute">Absolute</option>
+                            <option value="relative">Relative</option>
+                        </select>
+        
+                        <label>Z-Index:</label>
+                        <input type="number" id="zIndex" value="-1">
+                    </div>
+                    <button id="exportHTML">Export HTML</button>
+                </div>
+        
+                <!-- Media Export Section -->
+                <div class="control-group">
+                    <h3>Media Export</h3>
+                    <div class="recording-settings">
+                        <div class="setting-group">
+                            <label>Duration (seconds): <span id="recordingDurationValue">5</span></label>
+                            <input type="range" id="recordingDuration" min="1" max="30" value="5">
+                        </div>
+        
+                        <div class="setting-group">
+                            <label>Frame Rate: <span id="frameRateValue">60</span></label>
+                            <input type="range" id="frameRate" min="10" max="60" value="60">
+                        </div>
+        
+                        <div class="setting-group">
+                            <label>Quality: <span id="qualityValue">0.8</span></label>
+                            <input type="range" id="quality" min="0.1" max="1" step="0.1" value="0.8">
+                        </div>
+                    </div>
+        
+                    <div class="export-buttons">
+                        <button id="exportFrames">Export Frames</button>
+                        <button id="exportWebM">Export WebM</button>
+                        <button id="exportGIF">Export GIF</button>
+                        <button id="exportMP4">Export MP4</button>
+                    </div>
+                </div>
+            </div>
+            <div id="canvas">
+                <div id="tsparticlesPreview"></div>
+            </div>     
+        </div>
+    </div>
+    
+    <!-- Application scripts -->
+    <script src="recorder.js"></script>
+    <script src="drawing.js"></script>
+    <script src="svg_handler.js"></script>
+    <script src="particles.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

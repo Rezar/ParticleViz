@@ -5,6 +5,7 @@ const dispersionRangeInput = document.getElementById('dispersionRange');
 const particleCountInput = document.getElementById('particleCount');
 const sizeRange = document.getElementById('sizeRange');
 const shapeSelect = document.getElementById('shapeSelect');
+const animationEffect = document.getElementById('animationEffect');
 
 // Animation variables
 let particlesArray = [];
@@ -21,6 +22,73 @@ let drawablePixels = []; // Store drawable pixels globally
 let lastTime = 0;
 const targetFPS = 60;
 const frameInterval = 1000 / targetFPS;
+
+// Event listener for Load Config - Natasya Liew
+document.getElementById('loadConfigButton').addEventListener('click', () => {
+    const loadConfigInput = document.getElementById('loadSettingConfigJSON');
+    if (loadConfigInput.files.length === 0) {
+        alert('Please select a JSON file first.');
+        return;
+    }
+    const file = loadConfigInput.files[0];
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const config = JSON.parse(e.target.result);
+
+            // Apply settings to the controls
+            document.getElementById('colorSelect').value = config.colorMode || 'original';
+            document.getElementById('speedRange').value = config.particleSpeed || 1;
+            document.getElementById('dispersionRange').value = config.dispersionRange || 50;
+            document.getElementById('particleCount').value = config.particleCount || 1000;
+            document.getElementById('sizeRange').value = config.particleSize || 2;
+            document.getElementById('shapeSelect').value = config.particleShape || 'circle';
+            document.getElementById('animationEffect').value = config.animationEffect || 'none';
+
+            // Update global variables
+            particleSpeed = parseFloat(config.particleSpeed) || 1;
+            dispersionRange = parseFloat(config.dispersionRange) || 50;
+            particleCount = parseInt(config.particleCount, 10) || 1000;
+            particleSize = parseFloat(config.particleSize) || 2;
+            particleShape = config.particleShape || 'circle';
+            colorMode = config.colorMode || 'original';
+
+            // Recreate particles if image data exists
+            if (lastImageData) {
+                createParticlesFromImage(lastImageData);
+            }
+            alert('Config loaded successfully!');
+        } catch (error) {
+            alert('Invalid JSON configuration file.');
+            console.error(error);
+        }
+    };
+
+    reader.readAsText(file);
+});
+
+// Event listener for Save Config - Natasya Liew
+document.getElementById('saveConfigButton').addEventListener('click', () => {
+    const config = {
+        colorMode: document.getElementById('colorSelect').value,
+        particleSpeed: parseFloat(document.getElementById('speedRange').value),
+        dispersionRange: parseFloat(document.getElementById('dispersionRange').value),
+        particleCount: parseInt(document.getElementById('particleCount').value, 10),
+        particleSize: parseFloat(document.getElementById('sizeRange').value),
+        particleShape: document.getElementById('shapeSelect').value,
+        animationEffect: document.getElementById('animationEffect').value,
+    };
+
+    const jsonConfig = JSON.stringify(config, null, 2);
+    const blob = new Blob([jsonConfig], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'config.json';
+    link.click();
+
+    alert('Config saved successfully!');
+});
 
 // Optimized debounce with a shorter delay
 function debounce(func, wait) {
@@ -71,6 +139,7 @@ function collectDrawablePixels(imageData) {
 
 function createParticlesFromImage(imageData) {
     viewControls.style.display = 'block';
+    particleCanvas.style.display = 'block';
     inParticleMode = true;
     particlesArray = [];
     hideDropzone();
@@ -109,6 +178,7 @@ function createParticlesFromImage(imageData) {
 
             const x = pixel.x * scale + offsetX;
             const y = pixel.y * scale + offsetY;
+            const z = Math.random() - 0.5; // Random z position for 3D effect
             
             // Use color caching
             const colorKey = `${pixel.r},${pixel.g},${pixel.b},${pixel.alpha}`;
@@ -129,7 +199,7 @@ function createParticlesFromImage(imageData) {
                 colorCache.set(colorKey, color);
             }
             
-            particles[i] = new Particle(x, y, color);
+            particles[i] = new Particle(x, y, z, color);
         }
         
         particlesArray = particles;
@@ -161,6 +231,7 @@ function createParticlesFromImage(imageData) {
             particlesArray.push(new Particle(
                 randomParticle.originalX + xOffset, 
                 randomParticle.originalY + yOffset, 
+                Math.random() - 0.5, // Random z position for 3D effect
                 color
             ));
         }
@@ -182,20 +253,32 @@ function handleImageUpload(event) {
     img.src = URL.createObjectURL(file);
 }
 
+// Global rotation variables
+let rotationAngle = 0;
+const rotationSlider = document.getElementById('rotationSlider');
+let autoRotate = false;
+let autoRotationSpeed = 1; // Degrees per frame
+
+
 function animateParticles(currentTime) {
     if (!lastTime) lastTime = currentTime;
-    
     const deltaTime = currentTime - lastTime;
     
     if (deltaTime > frameInterval) {
         ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
         
-        // Use a traditional for loop for better performance
-        for (let i = 0; i < particlesArray.length; i++) {
-            const particle = particlesArray[i];
-            particle.update();
-            particle.draw(mouseX, mouseY);
+        // If auto-rotating, update the UI slider to match the current rotation
+        if (autoRotate) {
+            const currentRotation = (parseInt(rotationSlider.value) + autoRotationSpeed) % 360;
+            rotationSlider.value = currentRotation;
+            rotationAngle = currentRotation;
         }
+        
+        // Update and draw each particle
+        particlesArray.forEach(particle => {
+            particle.update();
+            particle.draw();
+        });
         
         lastTime = currentTime - (deltaTime % frameInterval);
     }
@@ -253,9 +336,20 @@ sizeRange.addEventListener('input', (e) => {
 shapeSelect.addEventListener('change', (e) => {
     particleShape = e.target.value;
 });
-
+rotationSlider.addEventListener('input', (e) => {
+    rotationAngle = parseInt(e.target.value);
+});
 drawingCanvas.addEventListener('wheel', (event) => zoom(event, drawingCanvas, ctxDrawing));
 particleCanvas.addEventListener('wheel', (event) => zoom(event, particleCanvas, ctxParticle));
-
+animationEffect.addEventListener('change', (e) => {
+    autoRotate = e.target.value === 'rotate';
+    if (autoRotate) {
+        // Disable the rotation slider when auto-rotating
+        rotationSlider.disabled = true;
+    } else {
+        // Enable the rotation slider when not auto-rotating
+        rotationSlider.disabled = false;
+    }
+});
 // Start the animation
 animationId = requestAnimationFrame(animateParticles);
