@@ -84,6 +84,12 @@ html {
   transition: background-color 0.2s;
 }
 
+#config-settings {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
 .file-input-button:hover {
   background-color: #1d4ed8;
 }

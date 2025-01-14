@@ -26,11 +26,18 @@ const frameInterval = 1000 / targetFPS;
 // Event listener for Load Config - Natasya Liew
 document.getElementById('loadConfigButton').addEventListener('click', () => {
     const loadConfigInput = document.getElementById('loadSettingConfigJSON');
-    if (loadConfigInput.files.length === 0) {
-        alert('Please select a JSON file first.');
-        return;
+    // Simulate a click on the hidden file input
+    loadConfigInput.click();
+});
+
+// Handle file selection
+document.getElementById('loadSettingConfigJSON').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+
+    if (!file) {
+      alert('No file selected.');
+      return;
     }
-    const file = loadConfigInput.files[0];
 
     const reader = new FileReader();
     reader.onload = (e) => {

@@ -23,12 +23,6 @@
         </select>
       </div>
 
-      <div class="control-group mode-select"> <!-- Added feature: Load Config Settings -->
-        <label>Load Settings Config JSON:</label>
-        <input type="file" id="loadSettingConfigJSON" accept=".json" />
-        <button id="loadConfigButton" class="file-input-button">Load Config</button>
-      </div>      
-
       <div class="control-group">
         <label class="control-label">Animation Effect</label>
         <select id="animationEffect">
@@ -91,11 +85,12 @@
         </select>
       </div>
 
-      <div class="control-group"> <!-- Added feature: Save Config Setting -->
-        <label for="saveConfigButton" class="save-config-label">
-          Save Settings Config JSON:
-        </label>
-        <button id="saveConfigButton" class="save-config-button">
+      <div id="config-settings" class="control-group"> <!-- Added feature: Save Config Setting -->
+        <button id="loadConfigButton" class="file-input-button">
+          Load Config
+        </button>
+        <input type="file" id="loadSettingConfigJSON" accept=".json" style="display: none;" />
+        <button id="saveConfigButton" class="file-input-button">
           Save Config
         </button>
       </div>      
@@ -103,7 +98,7 @@
       <div class="control-group">
         <div class="file-input-wrapper">
           <button id="createGIFButton" class="file-input-button">
-            Create Export
+            Create Animation
           </button>
           <input type="file" id="fileInput" accept="image/*" style="display: none;" />
         </div>
