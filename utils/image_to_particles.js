@@ -286,13 +286,12 @@ let linkOpacity = 0.2;
 // a distance threshold between particles. For example
 // if the user has the slider all the way to the left
 // at the 'None' side, the distance threshold is 0 therefore
-// the distance between any two given particles will be under the
+// the distance between any two given particles will not & can not be under the
 // distance threshold and no links will be rendered. However as the 
 // slider value (therefore distance threshold) increases more pairs of 
 // particles will meet the distance criteria and more links will
 // be drawn
 function drawParticleLinks() {
-    console.log(linkNumber)
     if (linkNumber < 1) return;
 
     const maxDistance = linkNumber;
