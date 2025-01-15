@@ -6,6 +6,9 @@ const particleCountInput = document.getElementById('particleCount');
 const sizeRange = document.getElementById('sizeRange');
 const shapeSelect = document.getElementById('shapeSelect');
 const animationEffect = document.getElementById('animationEffect');
+const opacityRangeSlider = document.getElementById('opacityRange');
+const linkOpacitySlider = document.getElementById('linkOpacity');
+const linkNumberSlider = document.getElementById('linkNumber');
 
 // Animation variables
 let particlesArray = [];
@@ -52,6 +55,9 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             document.getElementById('sizeRange').value = config.particleSize || 2;
             document.getElementById('shapeSelect').value = config.particleShape || 'circle';
             document.getElementById('animationEffect').value = config.animationEffect || 'none';
+            document.getElementById('opacityRange').value = config.opacityRange || 0.1;
+            document.getElementById('linkNumber').value = config.linkNumber || 0;
+            document.getElementById('linkOpacity').value = config.linkOpacity || 0.1;
 
             // Update global variables
             particleSpeed = parseFloat(config.particleSpeed) || 1;
@@ -60,6 +66,9 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             particleSize = parseFloat(config.particleSize) || 2;
             particleShape = config.particleShape || 'circle';
             colorMode = config.colorMode || 'original';
+            opacityRange = config.opacityRange || 0.1;
+            linkNumber = config.linkNumber || 0;
+            linkOpacity = config.linkOpacity || 0.1;
 
             // Recreate particles if image data exists
             if (lastImageData) {
@@ -85,6 +94,9 @@ document.getElementById('saveConfigButton').addEventListener('click', () => {
         particleSize: parseFloat(document.getElementById('sizeRange').value),
         particleShape: document.getElementById('shapeSelect').value,
         animationEffect: document.getElementById('animationEffect').value,
+        particleOpacity: parseFloat(document.getElementById('opacityRange').value),
+        linkNumber: parseFloat(document.getElementById('linkNumber').value),
+        linkOpacity: parseFloat(document.getElementById('linkOpacity').value)
     };
 
     const jsonConfig = JSON.stringify(config, null, 2);
@@ -265,7 +277,55 @@ let rotationAngle = 0;
 const rotationSlider = document.getElementById('rotationSlider');
 let autoRotate = false;
 let autoRotationSpeed = 1; // Degrees per frame
+// particle opacity and link control variables
+let particleOpacity = 1;
+let linkNumber = 0;
+let linkOpacity = 0.2;
 
+// control particles using the linkNumberSlider to dictate
+// a distance threshold between particles. For example
+// if the user has the slider all the way to the left
+// at the 'None' side, the distance threshold is 0 therefore
+// the distance between any two given particles will be under the
+// distance threshold and no links will be rendered. However as the 
+// slider value (therefore distance threshold) increases more pairs of 
+// particles will meet the distance criteria and more links will
+// be drawn
+function drawParticleLinks() {
+    console.log(linkNumber)
+    if (linkNumber < 1) return;
+
+    const maxDistance = linkNumber;
+    const particleCount = particlesArray.length;
+
+    ctxParticle.save();
+    ctxParticle.translate(particleCanvas.width / 2, particleCanvas.height / 2);
+
+    for (let i = 0; i < particleCount; i++) {
+        const p1 = particlesArray[i];
+        // Only check the next n particles to improve performance
+        const checkLimit = Math.min(particleCount, i + 50);
+        
+        for (let j = i + 1; j < checkLimit; j++) {
+            const p2 = particlesArray[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < maxDistance) {
+                const opacity = (1 - distance / maxDistance) * linkOpacity;
+                ctxParticle.beginPath();
+                ctxParticle.strokeStyle = `rgba(150, 150, 150, ${opacity})`;
+                ctxParticle.lineWidth = 1;
+                ctxParticle.moveTo(p1.x, p1.y);
+                ctxParticle.lineTo(p2.x, p2.y);
+                ctxParticle.stroke();
+            }
+        }
+    }
+
+    ctxParticle.restore();
+}
 
 function animateParticles(currentTime) {
     if (!lastTime) lastTime = currentTime;
@@ -280,6 +340,8 @@ function animateParticles(currentTime) {
             rotationSlider.value = currentRotation;
             rotationAngle = currentRotation;
         }
+
+        drawParticleLinks();
         
         // Update and draw each particle
         particlesArray.forEach(particle => {
@@ -358,5 +420,15 @@ animationEffect.addEventListener('change', (e) => {
         rotationSlider.disabled = false;
     }
 });
+opacityRangeSlider.addEventListener('input', (e) => {
+    particleOpacity = parseFloat(e.target.value);
+});
+linkOpacitySlider.addEventListener('input', (e) => {
+    linkOpacity = parseFloat(e.target.value);
+});
+linkNumberSlider.addEventListener('input', (e) => {
+    linkNumber = parseFloat(e.target.value);
+});
+
 // Start the animation
 animationId = requestAnimationFrame(animateParticles);
