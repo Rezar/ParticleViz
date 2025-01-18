@@ -38,7 +38,7 @@ function setupDrawingCanvas() {
     
     drawingCanvas.width = width;
     drawingCanvas.height = height;
-    ctxDrawing.fillStyle = colorPickerBackground.value;
+    ctxDrawing.fillStyle = backgroundColor;
     ctxDrawing.fillRect(0, 0, width, height);
 }
 

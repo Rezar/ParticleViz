@@ -9,8 +9,8 @@ const animationEffect = document.getElementById('animationEffect');
 const opacityRangeSlider = document.getElementById('opacityRange');
 const linkOpacitySlider = document.getElementById('linkOpacity');
 const linkNumberSlider = document.getElementById('linkNumber');
-const colorPickerLinks = document.getElementById('colorPickerLinks');
-const colorPickerBackground = document.getElementById('colorPickerBackground');
+const colorPickerLinks = document.getElementById('linkColor');
+const colorPickerBackground = document.getElementById('backgroundColor');
 
 // Animation variables
 let particlesArray = [];
@@ -60,8 +60,8 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             document.getElementById('opacityRange').value = config.opacityRange || 0.1;
             document.getElementById('linkNumber').value = config.linkNumber || 0;
             document.getElementById('linkOpacity').value = config.linkOpacity || 0.1;
-            document.getElementById('colorPickerLinks').value = config.colorPickerLinks || '#FFFFFF';
-            document.getElementById('colorPickerBackground').value = config.colorPickerBackground || '#0f172a';
+            document.getElementById('linkColor').value = config.linkColor || '#FFFFFF';
+            document.getElementById('backgroundColor').value = config.backgroundColor || '#0f172a';
 
             // Update global variables
             particleSpeed = parseFloat(config.particleSpeed) || 1;
@@ -73,6 +73,9 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             opacityRange = config.opacityRange || 0.1;
             linkNumber = config.linkNumber || 0;
             linkOpacity = config.linkOpacity || 0.1;
+            linkColor = config.linkColor || '#FFFFFF';
+            backgroundColor = config.backgroundColor || '#0f172a';
+            propogateBackgroundColorChanges(backgroundColor)
 
             // Recreate particles if image data exists
             if (lastImageData) {
@@ -101,8 +104,8 @@ document.getElementById('saveConfigButton').addEventListener('click', () => {
         particleOpacity: parseFloat(document.getElementById('opacityRange').value),
         linkNumber: parseFloat(document.getElementById('linkNumber').value),
         linkOpacity: parseFloat(document.getElementById('linkOpacity').value),
-        colorPickerLinks: document.getElementById('colorPickerLinks').value,
-        colorPickerBackground: document.getElementById('colorPickerBackground').value,
+        linkColor: document.getElementById('linkColor').value,
+        backgroundColor: document.getElementById('backgroundColor').value,
     };
 
     const jsonConfig = JSON.stringify(config, null, 2);
@@ -287,6 +290,8 @@ let autoRotationSpeed = 1; // Degrees per frame
 let particleOpacity = 1;
 let linkNumber = 0;
 let linkOpacity = 0.2;
+let linkColor = '#FFFFFF';
+let backgroundColor = '#0f172a';
 
 // control particles using the linkNumberSlider to dictate
 // a distance threshold between particles. For example
@@ -320,9 +325,9 @@ function drawParticleLinks() {
             if (distance < maxDistance) {
                 const opacity = (1 - distance / maxDistance) * linkOpacity;
                 ctxParticle.beginPath();
-                const r = parseInt(colorPickerLinks.value.slice(1, 3), 16);
-                const g = parseInt(colorPickerLinks.value.slice(3, 5), 16);
-                const b = parseInt(colorPickerLinks.value.slice(5, 7), 16);
+                const r = parseInt(linkColor.slice(1, 3), 16);
+                const g = parseInt(linkColor.slice(3, 5), 16);
+                const b = parseInt(linkColor.slice(5, 7), 16);
                 ctxParticle.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
                 ctxParticle.lineWidth = 1;
                 ctxParticle.moveTo(p1.x, p1.y);
@@ -437,24 +442,16 @@ linkOpacitySlider.addEventListener('input', (e) => {
 linkNumberSlider.addEventListener('input', (e) => {
     linkNumber = parseFloat(e.target.value);
 });
-
-function hexToHSL(hex) {
-    // Convert hex to RGB
-    let r = parseInt(hex.slice(1, 3), 16) / 255;
-    let g = parseInt(hex.slice(3, 5), 16) / 255;
-    let b = parseInt(hex.slice(5, 7), 16) / 255;
-
-    // Find max and min values to get lightness
-    let max = Math.max(r, g, b);
-    let min = Math.min(r, g, b);
-    let lightness = (max + min) / 2;
-
-    // Return the lightness as a percentage
-    return lightness * 100;
-}
-
+colorPickerLinks.addEventListener('input', (e) => {
+    linkColor = e.target.value;
+})
 colorPickerBackground.addEventListener('input', (e) => {
-    let selectedColor = e.target.value;
+    const selectedColor = e.target.value;
+    backgroundColor = selectedColor;
+    propogateBackgroundColorChanges(selectedColor);
+});
+
+function propogateBackgroundColorChanges(selectedColor) {
     document.body.style.backgroundColor = selectedColor;
     ctxDrawing.fillStyle = selectedColor;
     ctxDrawing.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
@@ -498,7 +495,22 @@ colorPickerBackground.addEventListener('input', (e) => {
         exportFormat.classList.add('dark-select');
         exportDevice.classList.add('dark-select');
     }
-});
+}
+
+function hexToHSL(hex) {
+    // Convert hex to RGB
+    let r = parseInt(hex.slice(1, 3), 16) / 255;
+    let g = parseInt(hex.slice(3, 5), 16) / 255;
+    let b = parseInt(hex.slice(5, 7), 16) / 255;
+
+    // Find max and min values to get lightness
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let lightness = (max + min) / 2;
+
+    // Return the lightness as a percentage
+    return lightness * 100;
+}
 
 // Start the animation
 animationId = requestAnimationFrame(animateParticles);

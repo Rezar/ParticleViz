@@ -154,7 +154,7 @@ function captureFrames() {
   tempCanvas.width = dimensions.isSmartwatch ? dimensions.containerWidth : dimensions.width;
   tempCanvas.height = dimensions.isSmartwatch ? dimensions.containerHeight : dimensions.height;
   const tempCtx = tempCanvas.getContext('2d');
-  tempCtx.fillStyle = colorPickerBackground.value;
+  tempCtx.fillStyle = backgroundColor;
   tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
 
   if (dimensions.isSmartwatch) {
@@ -238,7 +238,7 @@ function startExporting() {
                 justify-content: center;
                 align-items: center;
                 min-height: 100vh;
-                background-color: ${colorPickerBackground.value};
+                background-color: ${backgroundColor};
               }
               .container {
                 width: 100%;
@@ -280,7 +280,7 @@ function startExporting() {
       const wrapperCtx = wrapperCanvas.getContext('2d');
 
       function drawFrame() {
-        wrapperCtx.fillStyle = colorPickerBackground.value;
+        wrapperCtx.fillStyle = backgroundColor;
         wrapperCtx.fillRect(0, 0, wrapperCanvas.width, wrapperCanvas.height);
         wrapperCtx.drawImage(particleCanvas, 0, 0);
         requestAnimationFrame(drawFrame);
@@ -319,7 +319,7 @@ function startExporting() {
       const wrapperCtx = wrapperCanvas.getContext('2d');
 
       function drawFrame() {
-        wrapperCtx.fillStyle = colorPickerBackground.value;
+        wrapperCtx.fillStyle = backgroundColor;
         wrapperCtx.fillRect(0, 0, wrapperCanvas.width, wrapperCanvas.height);
         wrapperCtx.drawImage(particleCanvas, 0, 0);
         requestAnimationFrame(drawFrame);
@@ -377,7 +377,7 @@ function startExporting() {
         const delay = 1000 / measuredFPS;
     
         // Draw frame on temporary canvas with background color
-        frameCtx.fillStyle = colorPickerBackground.value;
+        frameCtx.fillStyle = backgroundColor;
         frameCtx.fillRect(0, 0, frameCanvas.width, frameCanvas.height);
 
         if (dimensions.isSmartwatch) {
