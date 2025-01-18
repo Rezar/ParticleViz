@@ -3,7 +3,7 @@ const particleCanvas = document.getElementById('particleCanvas');
 const drawingCanvas = document.getElementById('drawingCanvas');
 const inputModeSelect = document.getElementById('inputModeSelect');
 const drawingControls = document.getElementById('drawingControls');
-const colorPicker = document.getElementById('colorPicker');
+const colorPickerBrush = document.getElementById('colorPickerBrush');
 const brushSize = document.getElementById('brushSize');
 const clearCanvasBtn = document.getElementById('clearCanvas');
 const convertDrawingBtn = document.getElementById('convertDrawing');
@@ -38,7 +38,7 @@ function setupDrawingCanvas() {
     
     drawingCanvas.width = width;
     drawingCanvas.height = height;
-    ctxDrawing.fillStyle = 'white';
+    ctxDrawing.fillStyle = colorPickerBackground.value;
     ctxDrawing.fillRect(0, 0, width, height);
 }
 
@@ -67,7 +67,7 @@ function draw(e) {
     ctxDrawing.beginPath();
     ctxDrawing.moveTo(lastX, lastY);
     ctxDrawing.lineTo(x, y);
-    ctxDrawing.strokeStyle = colorPicker.value;
+    ctxDrawing.strokeStyle = colorPickerBrush.value;
     ctxDrawing.lineWidth = brushSize.value;
     ctxDrawing.lineCap = 'round';
     ctxDrawing.stroke();
@@ -139,7 +139,7 @@ function toggleDrawingMode() {
 // Draw a preview of the polygon as vertices are added
 function drawPolygonPreview() {
     // Do not clear the entire canvas. Simply draw the polygon preview over the existing drawing.
-    ctxDrawing.strokeStyle = colorPicker.value;
+    ctxDrawing.strokeStyle = colorPickerBrush.value;
     ctxDrawing.lineWidth = brushSize.value;
     ctxDrawing.beginPath();
 
@@ -189,7 +189,7 @@ window.addEventListener('resize', () => {
 
 // Set canvas size to window size
 function resizeCanvas() {
-    const controlWidth = document.getElementById('controls').offsetWidth || 200; // Width of the controls
+    const controlWidth = document.getElementById('particle-controls').offsetWidth || 200; // Width of the controls
     particleCanvas.width = window.innerWidth - (controlWidth + 30);  // Adjust width based on the controls
     particleCanvas.height = window.innerHeight;  // Full height of the window
 

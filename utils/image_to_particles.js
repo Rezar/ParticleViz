@@ -9,6 +9,8 @@ const animationEffect = document.getElementById('animationEffect');
 const opacityRangeSlider = document.getElementById('opacityRange');
 const linkOpacitySlider = document.getElementById('linkOpacity');
 const linkNumberSlider = document.getElementById('linkNumber');
+const colorPickerLinks = document.getElementById('colorPickerLinks');
+const colorPickerBackground = document.getElementById('colorPickerBackground');
 
 // Animation variables
 let particlesArray = [];
@@ -58,6 +60,8 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             document.getElementById('opacityRange').value = config.opacityRange || 0.1;
             document.getElementById('linkNumber').value = config.linkNumber || 0;
             document.getElementById('linkOpacity').value = config.linkOpacity || 0.1;
+            document.getElementById('colorPickerLinks').value = config.colorPickerLinks || '#FFFFFF';
+            document.getElementById('colorPickerBackground').value = config.colorPickerBackground || '#0f172a';
 
             // Update global variables
             particleSpeed = parseFloat(config.particleSpeed) || 1;
@@ -96,7 +100,9 @@ document.getElementById('saveConfigButton').addEventListener('click', () => {
         animationEffect: document.getElementById('animationEffect').value,
         particleOpacity: parseFloat(document.getElementById('opacityRange').value),
         linkNumber: parseFloat(document.getElementById('linkNumber').value),
-        linkOpacity: parseFloat(document.getElementById('linkOpacity').value)
+        linkOpacity: parseFloat(document.getElementById('linkOpacity').value),
+        colorPickerLinks: document.getElementById('colorPickerLinks').value,
+        colorPickerBackground: document.getElementById('colorPickerBackground').value,
     };
 
     const jsonConfig = JSON.stringify(config, null, 2);
@@ -314,7 +320,10 @@ function drawParticleLinks() {
             if (distance < maxDistance) {
                 const opacity = (1 - distance / maxDistance) * linkOpacity;
                 ctxParticle.beginPath();
-                ctxParticle.strokeStyle = `rgba(150, 150, 150, ${opacity})`;
+                const r = parseInt(colorPickerLinks.value.slice(1, 3), 16);
+                const g = parseInt(colorPickerLinks.value.slice(3, 5), 16);
+                const b = parseInt(colorPickerLinks.value.slice(5, 7), 16);
+                ctxParticle.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
                 ctxParticle.lineWidth = 1;
                 ctxParticle.moveTo(p1.x, p1.y);
                 ctxParticle.lineTo(p2.x, p2.y);
@@ -427,6 +436,68 @@ linkOpacitySlider.addEventListener('input', (e) => {
 });
 linkNumberSlider.addEventListener('input', (e) => {
     linkNumber = parseFloat(e.target.value);
+});
+
+function hexToHSL(hex) {
+    // Convert hex to RGB
+    let r = parseInt(hex.slice(1, 3), 16) / 255;
+    let g = parseInt(hex.slice(3, 5), 16) / 255;
+    let b = parseInt(hex.slice(5, 7), 16) / 255;
+
+    // Find max and min values to get lightness
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let lightness = (max + min) / 2;
+
+    // Return the lightness as a percentage
+    return lightness * 100;
+}
+
+colorPickerBackground.addEventListener('input', (e) => {
+    let selectedColor = e.target.value;
+    document.body.style.backgroundColor = selectedColor;
+    ctxDrawing.fillStyle = selectedColor;
+    ctxDrawing.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+
+    // Calculate the lightness
+    const lightness = hexToHSL(selectedColor)
+
+    const dropzone = document.getElementById('dropzone');
+    const dropzoneSvg = dropzone.querySelector('svg');
+    const dropzoneText = dropzone.querySelector('.dropzone-text');
+    const viewControls = document.getElementById('viewControls');
+    const labels = viewControls.querySelectorAll('.control-label');
+    const slider = document.getElementById('rotationSlider');
+    const rotationValueDisplay = document.getElementById('rotationValueDisplay');
+    const exportModal = document.getElementById('exportModal');
+    const exportFormat = document.getElementById('exportFormatSelect');
+    const exportDevice = document.getElementById('exportDeviceSelect');
+
+    if (lightness < 70) {
+        // If background is dark, make elements lighter
+        dropzone.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        dropzoneSvg.style.stroke = 'rgba(255, 255, 255, 0.6)';
+        dropzoneText.style.color = 'rgba(255, 255, 255, 0.8)';
+        labels.forEach(label => label.style.color = 'rgba(255, 255, 255, 0.8)');
+        slider.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+        rotationValueDisplay.style.color = '#e2e8f0';
+        drawingCanvas.style.border = '2px solid rgba(255, 255, 255, 0.3)';
+        exportModal.style.color = '#e2e8f0';
+        exportFormat.classList.remove('dark-select');
+        exportDevice.classList.remove('dark-select');
+    } else {
+        // If background is light, make elements darker
+        dropzone.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        dropzoneSvg.style.stroke = 'rgba(0, 0, 0, 0.6)';
+        dropzoneText.style.color = 'rgba(0, 0, 0, 0.8)';
+        labels.forEach(label => label.style.color = 'rgba(0, 0, 0, 0.8)');
+        slider.style.border = '1px solid #525252';
+        rotationValueDisplay.style.color = '#525252';
+        drawingCanvas.style.border = '2px solid #525252';
+        exportModal.style.color = '#000';
+        exportFormat.classList.add('dark-select');
+        exportDevice.classList.add('dark-select');
+    }
 });
 
 // Start the animation
