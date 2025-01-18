@@ -6,7 +6,7 @@ const particleCountInput = document.getElementById('particleCount');
 const sizeRange = document.getElementById('sizeRange');
 const shapeSelect = document.getElementById('shapeSelect');
 const animationEffect = document.getElementById('animationEffect');
-const opacityRangeSlider = document.getElementById('opacityRange');
+const particleOpacitySlider = document.getElementById('particleOpacity');
 const linkOpacitySlider = document.getElementById('linkOpacity');
 const linkNumberSlider = document.getElementById('linkNumber');
 const colorPickerLinks = document.getElementById('linkColor');
@@ -57,7 +57,7 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             document.getElementById('sizeRange').value = config.particleSize || 2;
             document.getElementById('shapeSelect').value = config.particleShape || 'circle';
             document.getElementById('animationEffect').value = config.animationEffect || 'none';
-            document.getElementById('opacityRange').value = config.opacityRange || 0.1;
+            document.getElementById('particleOpacity').value = config.particleOpacity || 1;
             document.getElementById('linkNumber').value = config.linkNumber || 0;
             document.getElementById('linkOpacity').value = config.linkOpacity || 0.1;
             document.getElementById('linkColor').value = config.linkColor || '#FFFFFF';
@@ -70,7 +70,7 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             particleSize = parseFloat(config.particleSize) || 2;
             particleShape = config.particleShape || 'circle';
             colorMode = config.colorMode || 'original';
-            opacityRange = config.opacityRange || 0.1;
+            particleOpacity = config.particleOpacity || 1;
             linkNumber = config.linkNumber || 0;
             linkOpacity = config.linkOpacity || 0.1;
             linkColor = config.linkColor || '#FFFFFF';
@@ -101,7 +101,7 @@ document.getElementById('saveConfigButton').addEventListener('click', () => {
         particleSize: parseFloat(document.getElementById('sizeRange').value),
         particleShape: document.getElementById('shapeSelect').value,
         animationEffect: document.getElementById('animationEffect').value,
-        particleOpacity: parseFloat(document.getElementById('opacityRange').value),
+        particleOpacity: parseFloat(document.getElementById('particleOpacity').value),
         linkNumber: parseFloat(document.getElementById('linkNumber').value),
         linkOpacity: parseFloat(document.getElementById('linkOpacity').value),
         linkColor: document.getElementById('linkColor').value,
@@ -433,7 +433,7 @@ animationEffect.addEventListener('change', (e) => {
         rotationSlider.disabled = false;
     }
 });
-opacityRangeSlider.addEventListener('input', (e) => {
+particleOpacitySlider.addEventListener('input', (e) => {
     particleOpacity = parseFloat(e.target.value);
 });
 linkOpacitySlider.addEventListener('input', (e) => {
