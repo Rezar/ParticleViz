@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image to Particle Animation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="container">
+    <div id="controls">
+      <h1 class="title">Particle Animation</h1>
+
+      <div class="control-group mode-select">
+        <label class="control-label">Input Mode</label>
+        <select id="inputModeSelect">
+          <option value="upload">Upload Image</option>
+          <option value="draw">Draw Image</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <div class="file-input-wrapper">
+          <button class="file-input-button" onclick="document.getElementById('fileInput').click()">
+            Choose Image
+          </button>
+          <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Color Spectrum</label>
+        <select id="colorSelect">
+          <option value="original">Original Image</option>
+          <option value="grayscale">Grayscale</option>
+          <option value="random">Random Colors</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Speed</label>
+        <input type="range" id="speedRange" min="0.1" max="5" value="1" step="0.1">
+        <div class="value-display">
+          <span>Slow</span>
+          <span>Fast</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Dispersion Range</label>
+        <input type="range" id="dispersionRange" min="0" max="200" value="50" step="5">
+        <div class="value-display">
+          <span>Tight</span>
+          <span>Scattered</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Number of Particles</label>
+        <input type="range" id="particleCount" min="100" max="5000" value="1000" step="100">
+        <div class="value-display">
+          <span>100</span>
+          <span>5000</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Particle Size</label>
+        <input type="range" id="sizeRange" min="1" max="10" value="2" step="0.5">
+        <div class="value-display">
+          <span>Small</span>
+          <span>Large</span>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label">Particle Shape</label>
+        <select id="shapeSelect">
+          <option value="circle">Circle</option>
+          <option value="square">Square</option>
+          <option value="star">Star</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <div class="file-input-wrapper">
+          <button id="createGIFButton" class="file-input-button">
+            Create GIF
+          </button>
+          <input type="file" id="fileInput" accept="image/*" style="display: none;" />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="drawing-controls" id="drawingControls">
+      <div class="control-group">
+        <label class="control-label">Brush Color</label>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000">
+      </div>
+      <div class="control-group">
+        <label class="control-label">Brush Size</label>
+        <input type="range" id="brushSize" class="brush-size" min="1" max="50" value="5">
+      </div>
+      <div class="drawing-buttons">
+        <button id="drawingModeSwitch">Polygon Mode: OFF</button>
+        <button id="clearCanvas">Clear Canvas</button>
+        <button id="convertDrawing">Convert to Particles</button>
+      </div>
+    </div>
+
+    <div class="view-controls" id="viewControls" style="right: 0; display: none;">
+      <button id="zoomIn">Zoom In</button>
+      <button id="zoomOut">Zoom Out</button>
+      <button id="recenterCanvas">Recenter</button>
+    </div>
+
+    <canvas id="drawingCanvas"></canvas>
+
+    <div id="dropzone" class="dropzone" onclick="document.getElementById('fileInput').click()">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(255, 255, 255, 0.6)" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="17 8 12 3 7 8"></polyline>
+        <line x1="12" y1="3" x2="12" y2="15"></line>
+      </svg>
+      <p class="dropzone-text">Drop an image or click to upload</p>
+    </div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Visualization Export Modal -->
+    <div id="exportModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h1 class="title">Export Options</h1>
+        <div class="control-group">
+          <label class="control-label">Export Format</label>
+          <select id="exportFormatSelect">
+            <option value="gif">GIF</option>
+            <option value="html">HTML</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label">Export For</label>
+          <select id="exportDeviceSelect">
+            <option value="desktop">Desktop</option>
+            <option value="mobile">Mobile</option>
+            <option value="smartwatch">Smartwatch</option>
+          </select>
+        </div>
+        <button id="exportButton" class="file-input-button">Export</button>
+        <div id="progress-bar">
+          <div id="progress-bar-fill"></div>
+        </div>
+
+        <div id="recordingStatus" style="display: none; text-align: center; margin-top: 10px; color: #ef4444;">
+          Creating... <span id="recordingTimer">0</span>s
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="patterned_src/gif.js"></script>
+  <script src="patterned_src/drag_and_drop.js"></script>
+  <script src="patterned_src/particle.js"></script>
+  <script src="patterned_src/drawing.js"></script>
+  <script src="patterned_src/image_to_particles.js"></script>
+  <script src="patterned_src/view_controls.js"></script>
+  <script src="patterned_src/particles_to_gif.js"></script>
+</body>
+
+</html>
