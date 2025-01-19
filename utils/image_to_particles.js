@@ -5,19 +5,22 @@ const dispersionRangeInput = document.getElementById('dispersionRange');
 const particleCountInput = document.getElementById('particleCount');
 const sizeRange = document.getElementById('sizeRange');
 const shapeSelect = document.getElementById('shapeSelect');
-const animationEffect = document.getElementById('animationEffect');
+const animationEffectSelect = document.getElementById('animationEffect');
 const particleOpacitySlider = document.getElementById('particleOpacity');
 const linkOpacitySlider = document.getElementById('linkOpacity');
 const linkNumberSlider = document.getElementById('linkNumber');
 const colorPickerLinks = document.getElementById('linkColor');
 const colorPickerBackground = document.getElementById('backgroundColor');
+const rotationSlider = document.getElementById('rotationSlider');
 
 // Animation variables
 let particlesArray = [];
 let particleSpeed = parseFloat(speedRange.value);
 let particleShape = 'circle';
 let particleCount = parseInt(particleCountInput.value);
+let particleOpacity = 1;
 let colorMode = 'original';
+let backgroundColor = '#0f172a';
 let lastImageData = null;
 let animationId = null;
 let particleSize = 2;
@@ -25,8 +28,16 @@ let dispersionRange = 50; // Default dispersion range
 let inParticleMode = false;
 let drawablePixels = []; // Store drawable pixels globally
 let lastTime = 0;
-const targetFPS = 60;
-const frameInterval = 1000 / targetFPS;
+const frameInterval = 1000 / 60; // target 60 fps
+// Global rotation variables
+let rotationAngle = 0;
+let animationEffect = "";
+let autoRotationSpeed = 1; // Degrees per frame
+// link control variables
+let linkNumber = 0;
+let linkOpacity = 0.2;
+let linkColor = '#FFFFFF';
+
 
 // Event listener for Load Config - Natasya Liew
 document.getElementById('loadConfigButton').addEventListener('click', () => {
@@ -69,6 +80,7 @@ document.getElementById('loadSettingConfigJSON').addEventListener('change', (eve
             particleCount = parseInt(config.particleCount, 10) || 1000;
             particleSize = parseFloat(config.particleSize) || 2;
             particleShape = config.particleShape || 'circle';
+            animationEffect = config.animationEffect || 'none';
             colorMode = config.colorMode || 'original';
             particleOpacity = config.particleOpacity || 1;
             linkNumber = config.linkNumber || 0;
@@ -281,18 +293,6 @@ function handleImageUpload(event) {
     img.src = URL.createObjectURL(file);
 }
 
-// Global rotation variables
-let rotationAngle = 0;
-const rotationSlider = document.getElementById('rotationSlider');
-let autoRotate = false;
-let autoRotationSpeed = 1; // Degrees per frame
-// particle opacity and link control variables
-let particleOpacity = 1;
-let linkNumber = 0;
-let linkOpacity = 0.2;
-let linkColor = '#FFFFFF';
-let backgroundColor = '#0f172a';
-
 // control particles using the linkNumberSlider to dictate
 // a distance threshold between particles. For example
 // if the user has the slider all the way to the left
@@ -348,7 +348,7 @@ function animateParticles(currentTime) {
         ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
         
         // If auto-rotating, update the UI slider to match the current rotation
-        if (autoRotate) {
+        if (animationEffect === "rotate") {
             const currentRotation = (parseInt(rotationSlider.value) + autoRotationSpeed) % 360;
             rotationSlider.value = currentRotation;
             rotationAngle = currentRotation;
@@ -391,65 +391,6 @@ function redrawCanvas(canvas, context) {
     context.fillStyle = 'red';
     context.fillRect(10, 10, 100, 100);
 }
-
-// Event listeners
-fileInput.addEventListener('change', handleImageUpload);
-colorSelect.addEventListener('change', (e) => {
-    colorMode = e.target.value;
-    if (lastImageData) {
-        createParticlesFromImage(lastImageData);
-    }
-});
-speedRange.addEventListener('input', (e) => {
-    particleSpeed = parseFloat(e.target.value);
-});
-dispersionRangeInput.addEventListener('input', (e) => {
-    dispersionRange = parseFloat(e.target.value);
-});
-particleCountInput.addEventListener('input', debounce((e) => {
-    particleCount = parseInt(e.target.value);
-    if (lastImageData) {
-        createParticlesFromImage(lastImageData);
-    }
-}, 100)); // Reduced debounce time to 100ms
-sizeRange.addEventListener('input', (e) => {
-    particleSize = parseFloat(e.target.value);
-});
-shapeSelect.addEventListener('change', (e) => {
-    particleShape = e.target.value;
-});
-rotationSlider.addEventListener('input', (e) => {
-    rotationAngle = parseInt(e.target.value);
-});
-drawingCanvas.addEventListener('wheel', (event) => zoom(event, drawingCanvas, ctxDrawing));
-particleCanvas.addEventListener('wheel', (event) => zoom(event, particleCanvas, ctxParticle));
-animationEffect.addEventListener('change', (e) => {
-    autoRotate = e.target.value === 'rotate';
-    if (autoRotate) {
-        // Disable the rotation slider when auto-rotating
-        rotationSlider.disabled = true;
-    } else {
-        // Enable the rotation slider when not auto-rotating
-        rotationSlider.disabled = false;
-    }
-});
-particleOpacitySlider.addEventListener('input', (e) => {
-    particleOpacity = parseFloat(e.target.value);
-});
-linkOpacitySlider.addEventListener('input', (e) => {
-    linkOpacity = parseFloat(e.target.value);
-});
-linkNumberSlider.addEventListener('input', (e) => {
-    linkNumber = parseFloat(e.target.value);
-});
-colorPickerLinks.addEventListener('input', (e) => {
-    linkColor = e.target.value;
-})
-colorPickerBackground.addEventListener('input', (e) => {
-    const selectedColor = e.target.value;
-    backgroundColor = selectedColor;
-    propogateBackgroundColorChanges(selectedColor);
-});
 
 function propogateBackgroundColorChanges(selectedColor) {
     document.body.style.backgroundColor = selectedColor;
@@ -511,6 +452,65 @@ function hexToHSL(hex) {
     // Return the lightness as a percentage
     return lightness * 100;
 }
+
+// Event listeners
+fileInput.addEventListener('change', handleImageUpload);
+colorSelect.addEventListener('change', (e) => {
+    colorMode = e.target.value;
+    if (lastImageData) {
+        createParticlesFromImage(lastImageData);
+    }
+});
+speedRange.addEventListener('input', (e) => {
+    particleSpeed = parseFloat(e.target.value);
+});
+dispersionRangeInput.addEventListener('input', (e) => {
+    dispersionRange = parseFloat(e.target.value);
+});
+particleCountInput.addEventListener('input', debounce((e) => {
+    particleCount = parseInt(e.target.value);
+    if (lastImageData) {
+        createParticlesFromImage(lastImageData);
+    }
+}, 100)); // Reduced debounce time to 100ms
+sizeRange.addEventListener('input', (e) => {
+    particleSize = parseFloat(e.target.value);
+});
+shapeSelect.addEventListener('change', (e) => {
+    particleShape = e.target.value;
+});
+rotationSlider.addEventListener('input', (e) => {
+    rotationAngle = parseInt(e.target.value);
+});
+drawingCanvas.addEventListener('wheel', (event) => zoom(event, drawingCanvas, ctxDrawing));
+particleCanvas.addEventListener('wheel', (event) => zoom(event, particleCanvas, ctxParticle));
+animationEffectSelect.addEventListener('change', (e) => {
+    animationEffect = e.target.value;
+    if (animationEffect === "rotate") {
+        // Disable the rotation slider when auto-rotating
+        rotationSlider.disabled = true;
+    } else {
+        // Enable the rotation slider when not auto-rotating
+        rotationSlider.disabled = false;
+    }
+});
+particleOpacitySlider.addEventListener('input', (e) => {
+    particleOpacity = parseFloat(e.target.value);
+});
+linkOpacitySlider.addEventListener('input', (e) => {
+    linkOpacity = parseFloat(e.target.value);
+});
+linkNumberSlider.addEventListener('input', (e) => {
+    linkNumber = parseFloat(e.target.value);
+});
+colorPickerLinks.addEventListener('input', (e) => {
+    linkColor = e.target.value;
+})
+colorPickerBackground.addEventListener('input', (e) => {
+    const selectedColor = e.target.value;
+    backgroundColor = selectedColor;
+    propogateBackgroundColorChanges(selectedColor);
+});
 
 // Start the animation
 animationId = requestAnimationFrame(animateParticles);
