@@ -10,13 +10,34 @@ An interactive web application that converts images into dynamic particle animat
   - Freehand drawing
   - Polygon drawing tool
 
+### Animation Effects
+- 360 Rotation: auto rotate the particle visualization in a 360 degree loop
+- Randomized Depth & Circular XY Movement: allow particles to float between closer and farther depths while also travelling in a circular pattern along the XY plane
+
 ### Particle Customization
 - Color spectrum options (original, grayscale, random)
-- Adjustable animation speed
-- Configurable particle dispersion
-- Control over particle count (100-5000)
-- Multiple particle shapes (circle, square, star)
-- Customizable particle size
+- Control over particle: size, speed, dispersion, opacity, count (100 - 5000), shape (circle, square, star)
+
+### Particle Link Customization
+- Control over particle link: count, opacity, color
+
+### Background Color Customization
+- Control over animation background color
+
+### Configuration Import & Export
+Using the 'Load Config' and 'Save Config' buttons you can save and export the below customizations and reimport them when desired:
+* particle color
+* particle opacity
+* particle speed
+* particle dispersion
+* particle count
+* particle size
+* particle shape
+* animation effect
+* particle link count
+* particle link opacity
+* particle link color
+* animation background color
 
 ### Canvas Controls
 - Zoom in/out functionality
@@ -24,8 +45,8 @@ An interactive web application that converts images into dynamic particle animat
 - Panning/dragging
 
 ### Export Options
-- Create GIF animations
-- Export as HTML
+- Export as GIF, HTML, WEBM, MP4, Frames
+- Control over animation recording length
 - Device-specific sizing:
   - Desktop (1920x1080)
   - Mobile (375x667)
@@ -64,7 +85,7 @@ npm install -g live-server
 
 4. **Export**:
    - Click "Create GIF" to open export options
-   - Choose export format (GIF/HTML)
+   - Choose export format (GIF/HTML/WEBM/MP4/Frames) and animation duration
    - Select target device dimensions
    - Wait for processing and download
 
