@@ -17,16 +17,17 @@ class Particle {
     }
 
     draw() {
-        // Calculate scale based on z position for depth effect
-        const zScale = 1 + this.z / 1000; // Adjust divisor to control depth effect
+        const zScale = 1 + this.z / 1000;
         const adjustedSize = particleSize / zScale;
 
-        // Drawing logic
         ctxParticle.save();
         ctxParticle.translate(particleCanvas.width / 2, particleCanvas.height / 2);
 
-        ctxParticle.fillStyle = this.color;
-        ctxParticle.strokeStyle = this.color;
+        // Apply opacity to the color
+        const rgba = this.color.match(/[\d.]+/g);
+        const color = `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${particleOpacity})`;
+        ctxParticle.fillStyle = color;
+        ctxParticle.strokeStyle = color;
 
         switch (particleShape) {
             case 'circle':

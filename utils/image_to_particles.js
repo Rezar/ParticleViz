@@ -6,6 +6,11 @@ const particleCountInput = document.getElementById('particleCount');
 const sizeRange = document.getElementById('sizeRange');
 const shapeSelect = document.getElementById('shapeSelect');
 const animationEffect = document.getElementById('animationEffect');
+const particleOpacitySlider = document.getElementById('particleOpacity');
+const linkOpacitySlider = document.getElementById('linkOpacity');
+const linkNumberSlider = document.getElementById('linkNumber');
+const colorPickerLinks = document.getElementById('linkColor');
+const colorPickerBackground = document.getElementById('backgroundColor');
 
 // Animation variables
 let particlesArray = [];
@@ -26,11 +31,18 @@ const frameInterval = 1000 / targetFPS;
 // Event listener for Load Config - Natasya Liew
 document.getElementById('loadConfigButton').addEventListener('click', () => {
     const loadConfigInput = document.getElementById('loadSettingConfigJSON');
-    if (loadConfigInput.files.length === 0) {
-        alert('Please select a JSON file first.');
-        return;
+    // Simulate a click on the hidden file input
+    loadConfigInput.click();
+});
+
+// Handle file selection
+document.getElementById('loadSettingConfigJSON').addEventListener('change', (event) => {
+    const file = event.target.files[0];
+
+    if (!file) {
+      alert('No file selected.');
+      return;
     }
-    const file = loadConfigInput.files[0];
 
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -45,6 +57,11 @@ document.getElementById('loadConfigButton').addEventListener('click', () => {
             document.getElementById('sizeRange').value = config.particleSize || 2;
             document.getElementById('shapeSelect').value = config.particleShape || 'circle';
             document.getElementById('animationEffect').value = config.animationEffect || 'none';
+            document.getElementById('particleOpacity').value = config.particleOpacity || 1;
+            document.getElementById('linkNumber').value = config.linkNumber || 0;
+            document.getElementById('linkOpacity').value = config.linkOpacity || 0.1;
+            document.getElementById('linkColor').value = config.linkColor || '#FFFFFF';
+            document.getElementById('backgroundColor').value = config.backgroundColor || '#0f172a';
 
             // Update global variables
             particleSpeed = parseFloat(config.particleSpeed) || 1;
@@ -53,6 +70,12 @@ document.getElementById('loadConfigButton').addEventListener('click', () => {
             particleSize = parseFloat(config.particleSize) || 2;
             particleShape = config.particleShape || 'circle';
             colorMode = config.colorMode || 'original';
+            particleOpacity = config.particleOpacity || 1;
+            linkNumber = config.linkNumber || 0;
+            linkOpacity = config.linkOpacity || 0.1;
+            linkColor = config.linkColor || '#FFFFFF';
+            backgroundColor = config.backgroundColor || '#0f172a';
+            propogateBackgroundColorChanges(backgroundColor)
 
             // Recreate particles if image data exists
             if (lastImageData) {
@@ -78,6 +101,11 @@ document.getElementById('saveConfigButton').addEventListener('click', () => {
         particleSize: parseFloat(document.getElementById('sizeRange').value),
         particleShape: document.getElementById('shapeSelect').value,
         animationEffect: document.getElementById('animationEffect').value,
+        particleOpacity: parseFloat(document.getElementById('particleOpacity').value),
+        linkNumber: parseFloat(document.getElementById('linkNumber').value),
+        linkOpacity: parseFloat(document.getElementById('linkOpacity').value),
+        linkColor: document.getElementById('linkColor').value,
+        backgroundColor: document.getElementById('backgroundColor').value,
     };
 
     const jsonConfig = JSON.stringify(config, null, 2);
@@ -258,7 +286,59 @@ let rotationAngle = 0;
 const rotationSlider = document.getElementById('rotationSlider');
 let autoRotate = false;
 let autoRotationSpeed = 1; // Degrees per frame
+// particle opacity and link control variables
+let particleOpacity = 1;
+let linkNumber = 0;
+let linkOpacity = 0.2;
+let linkColor = '#FFFFFF';
+let backgroundColor = '#0f172a';
 
+// control particles using the linkNumberSlider to dictate
+// a distance threshold between particles. For example
+// if the user has the slider all the way to the left
+// at the 'None' side, the distance threshold is 0 therefore
+// the distance between any two given particles will not & can not be under the
+// distance threshold and no links will be rendered. However as the 
+// slider value (therefore distance threshold) increases more pairs of 
+// particles will meet the distance criteria and more links will
+// be drawn
+function drawParticleLinks() {
+    if (linkNumber < 1) return;
+
+    const maxDistance = linkNumber;
+    const particleCount = particlesArray.length;
+
+    ctxParticle.save();
+    ctxParticle.translate(particleCanvas.width / 2, particleCanvas.height / 2);
+
+    for (let i = 0; i < particleCount; i++) {
+        const p1 = particlesArray[i];
+        // Only check the next n particles to improve performance
+        const checkLimit = Math.min(particleCount, i + 50);
+        
+        for (let j = i + 1; j < checkLimit; j++) {
+            const p2 = particlesArray[j];
+            const dx = p1.x - p2.x;
+            const dy = p1.y - p2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < maxDistance) {
+                const opacity = (1 - distance / maxDistance) * linkOpacity;
+                ctxParticle.beginPath();
+                const r = parseInt(linkColor.slice(1, 3), 16);
+                const g = parseInt(linkColor.slice(3, 5), 16);
+                const b = parseInt(linkColor.slice(5, 7), 16);
+                ctxParticle.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+                ctxParticle.lineWidth = 1;
+                ctxParticle.moveTo(p1.x, p1.y);
+                ctxParticle.lineTo(p2.x, p2.y);
+                ctxParticle.stroke();
+            }
+        }
+    }
+
+    ctxParticle.restore();
+}
 
 function animateParticles(currentTime) {
     if (!lastTime) lastTime = currentTime;
@@ -273,6 +353,8 @@ function animateParticles(currentTime) {
             rotationSlider.value = currentRotation;
             rotationAngle = currentRotation;
         }
+
+        drawParticleLinks();
         
         // Update and draw each particle
         particlesArray.forEach(particle => {
@@ -351,5 +433,84 @@ animationEffect.addEventListener('change', (e) => {
         rotationSlider.disabled = false;
     }
 });
+particleOpacitySlider.addEventListener('input', (e) => {
+    particleOpacity = parseFloat(e.target.value);
+});
+linkOpacitySlider.addEventListener('input', (e) => {
+    linkOpacity = parseFloat(e.target.value);
+});
+linkNumberSlider.addEventListener('input', (e) => {
+    linkNumber = parseFloat(e.target.value);
+});
+colorPickerLinks.addEventListener('input', (e) => {
+    linkColor = e.target.value;
+})
+colorPickerBackground.addEventListener('input', (e) => {
+    const selectedColor = e.target.value;
+    backgroundColor = selectedColor;
+    propogateBackgroundColorChanges(selectedColor);
+});
+
+function propogateBackgroundColorChanges(selectedColor) {
+    document.body.style.backgroundColor = selectedColor;
+    ctxDrawing.fillStyle = selectedColor;
+    ctxDrawing.fillRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+
+    // Calculate the lightness
+    const lightness = hexToHSL(selectedColor)
+
+    const dropzone = document.getElementById('dropzone');
+    const dropzoneSvg = dropzone.querySelector('svg');
+    const dropzoneText = dropzone.querySelector('.dropzone-text');
+    const viewControls = document.getElementById('viewControls');
+    const labels = viewControls.querySelectorAll('.control-label');
+    const slider = document.getElementById('rotationSlider');
+    const rotationValueDisplay = document.getElementById('rotationValueDisplay');
+    const exportModal = document.getElementById('exportModal');
+    const exportFormat = document.getElementById('exportFormatSelect');
+    const exportDevice = document.getElementById('exportDeviceSelect');
+
+    if (lightness < 70) {
+        // If background is dark, make elements lighter
+        dropzone.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        dropzoneSvg.style.stroke = 'rgba(255, 255, 255, 0.6)';
+        dropzoneText.style.color = 'rgba(255, 255, 255, 0.8)';
+        labels.forEach(label => label.style.color = 'rgba(255, 255, 255, 0.8)');
+        slider.style.border = '1px solid rgba(255, 255, 255, 0.2)';
+        rotationValueDisplay.style.color = '#e2e8f0';
+        drawingCanvas.style.border = '2px solid rgba(255, 255, 255, 0.3)';
+        exportModal.style.color = '#e2e8f0';
+        exportFormat.classList.remove('dark-select');
+        exportDevice.classList.remove('dark-select');
+    } else {
+        // If background is light, make elements darker
+        dropzone.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+        dropzoneSvg.style.stroke = 'rgba(0, 0, 0, 0.6)';
+        dropzoneText.style.color = 'rgba(0, 0, 0, 0.8)';
+        labels.forEach(label => label.style.color = 'rgba(0, 0, 0, 0.8)');
+        slider.style.border = '1px solid #525252';
+        rotationValueDisplay.style.color = '#525252';
+        drawingCanvas.style.border = '2px solid #525252';
+        exportModal.style.color = '#000';
+        exportFormat.classList.add('dark-select');
+        exportDevice.classList.add('dark-select');
+    }
+}
+
+function hexToHSL(hex) {
+    // Convert hex to RGB
+    let r = parseInt(hex.slice(1, 3), 16) / 255;
+    let g = parseInt(hex.slice(3, 5), 16) / 255;
+    let b = parseInt(hex.slice(5, 7), 16) / 255;
+
+    // Find max and min values to get lightness
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+    let lightness = (max + min) / 2;
+
+    // Return the lightness as a percentage
+    return lightness * 100;
+}
+
 // Start the animation
 animationId = requestAnimationFrame(animateParticles);
