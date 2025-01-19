@@ -14,6 +14,9 @@ class Particle {
         this.angularSpeedXY = (Math.random() - 0.5) * 0.02;
         this.angularSpeedXZ = (Math.random() - 0.5) * 0.02;
         this.autoRotationAngle = 0;
+        this.randomDepth = (Math.random() - 0.5) * 400;
+        this.depthCycleOffset = Math.random() * Math.PI * 2;
+        this.depthCycleSpeed = 0.02 + Math.random() * 0.03;
     }
 
     draw() {
@@ -71,7 +74,35 @@ class Particle {
     }
 
     update() {
-        // Update angles for orbital motion with scaling to control speed
+        if (animationEffect === "randomizedDepth") {
+            // if randomizedDepth effect is on we have to update randomDepth property
+            this.randomDepth += Math.sin(this.depthCycleOffset + Date.now() * 0.001 * this.depthCycleSpeed);
+            this.randomDepth = Math.max(-400, Math.min(400, this.randomDepth));
+            
+            // multiply the base speed by 5 as the particles are now moving much farther between the z dimension and the speed is not as apparent
+            this.angleXY += 0.02 * particleSpeed * 5;
+            const movementRadius = 3 * (dispersionRange/100);
+            
+            // calculate new target position to facilitate circular movement along XY plane based on angleXY
+            let targetX = this.originalX + movementRadius * Math.cos(this.angleXY);
+            let targetY = this.originalY + movementRadius * Math.sin(this.angleXY);
+            
+            // rotate based on global rotationAngle, randomDepth, and dispersionRange
+            const rotationRad = (rotationAngle * Math.PI) / 180;
+            const normalizedZ = this.randomDepth * (dispersionRange / 200);
+            const rotatedX = targetX * Math.cos(rotationRad) + normalizedZ * Math.sin(rotationRad);
+            const rotatedZ = -targetX * Math.sin(rotationRad) + normalizedZ * Math.cos(rotationRad);
+            
+            // update particle x, y, z
+            const moveSpeed = 0.1 * particleSpeed;
+            this.x = this.x + (rotatedX - this.x) * moveSpeed;
+            this.y = this.y + (targetY - this.y) * moveSpeed;
+            this.z = rotatedZ;
+            
+            return;
+        }
+
+        // if randomizedDepth effect is not on, we update particle properties like normal
         this.angleXY += this.angularSpeedXY * Math.sqrt(particleSpeed);
         this.angleXZ += this.angularSpeedXZ * Math.sqrt(particleSpeed);
     
@@ -82,7 +113,7 @@ class Particle {
     
         // Use either auto-rotation or slider rotation
         let angle;
-        if (autoRotate) {
+        if (animationEffect === "rotate") {
             this.autoRotationAngle = (this.autoRotationAngle + autoRotationSpeed) % 360;
             angle = (this.autoRotationAngle * Math.PI) / 180;
         } else {
