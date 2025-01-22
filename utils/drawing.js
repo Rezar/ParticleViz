@@ -99,19 +99,6 @@ function clearDrawingCanvas() {
     polygonVertices = []; // Clear polygon vertices when canvas is cleared
 }
 
-// Handle input mode changes
-function handleInputModeChange() {
-    const mode = inputModeSelect.value;
-    if (mode === 'draw') {
-        drawingCanvas.style.display = 'block';
-        drawingControls.classList.add('active');
-        setupDrawingCanvas();
-    } else {
-        drawingCanvas.style.display = 'none';
-        drawingControls.classList.remove('active');
-    }
-}
-
 // Save Drawing - Natasya Liew
 function saveDrawingAsImage() {
     const dataURL = drawingCanvas.toDataURL('image/png'); 
@@ -165,12 +152,45 @@ function completePolygon() {
     polygonVertices = []; // Clear vertices after completing the polygon
 }
 
+function getInputModeFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('mode') || 'upload'; // Default to upload if no mode specified
+}
+
+function handleInputModeChange() {
+    const mode = inputModeSelect.value;
+    const newURL = new URL(window.location.href);
+    newURL.searchParams.set('mode', mode);
+    window.location.href = newURL.toString();
+}
+
+function initializeFromURL() {
+    const mode = getInputModeFromURL();
+    
+    // Set the select element to match URL parameter
+    inputModeSelect.value = mode;
+    
+    // Set up the appropriate view
+    if (mode === 'draw') {
+        drawingCanvas.style.display = 'block';
+        drawingControls.classList.add('active');
+        setupDrawingCanvas();
+    } else {
+        drawingCanvas.style.display = 'none';
+        drawingControls.classList.remove('active');
+    }
+}
+
+
 // Event listeners for drawing
 drawingCanvas.addEventListener('mousedown', startDrawing);
 drawingCanvas.addEventListener('mousemove', draw);
 drawingCanvas.addEventListener('mouseup', stopDrawing);
 drawingCanvas.addEventListener('mouseout', stopDrawing);
 drawingCanvas.addEventListener('dblclick', completePolygon); // Handle polygon completion
+
+// initialize input mode from url
+document.addEventListener('DOMContentLoaded', initializeFromURL);
 
 // Event listeners for controls
 inputModeSelect.addEventListener('change', handleInputModeChange);

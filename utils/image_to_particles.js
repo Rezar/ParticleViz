@@ -146,6 +146,12 @@ function collectDrawablePixels(imageData) {
     const data = imageData.data;
     const pixels = [];
     
+    // Get background color in RGB
+    const bgColor = hexToRGB(backgroundColor);
+    
+    // Tolerance for color comparison (0-255)
+    const tolerance = 1;
+    
     // Step through pixels with a stride for better performance
     const stride = 2; // Adjust this value based on image size
     for (let y = 0; y < imgHeight; y += stride) {
@@ -156,10 +162,11 @@ function collectDrawablePixels(imageData) {
             const b = data[i + 2];
             const alpha = data[i + 3];
 
+            // Check if pixel is different from background color
             const isDrawnPixel = (
-                Math.abs(r - 255) > 5 || 
-                Math.abs(g - 255) > 5 || 
-                Math.abs(b - 255) > 5
+                Math.abs(r - bgColor.r) > tolerance || 
+                Math.abs(g - bgColor.g) > tolerance || 
+                Math.abs(b - bgColor.b) > tolerance
             ) && alpha > 128;
 
             if (isDrawnPixel) {
@@ -451,6 +458,18 @@ function hexToHSL(hex) {
 
     // Return the lightness as a percentage
     return lightness * 100;
+}
+
+function hexToRGB(hex) {
+    // Remove # if present
+    hex = hex.replace('#', '');
+    
+    // Convert hex to RGB
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    return { r, g, b };
 }
 
 // Event listeners
