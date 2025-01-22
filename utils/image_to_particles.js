@@ -189,7 +189,7 @@ function createParticlesFromImage(imageData) {
     particleCanvas.style.display = 'block';
     inParticleMode = true;
     particlesArray = [];
-    hideDropzone();
+    drawablePixels = [];
     
     const imgWidth = imageData.width;
     const imgHeight = imageData.height;
@@ -202,10 +202,8 @@ function createParticlesFromImage(imageData) {
     const offsetX = (particleCanvas.width - imgWidth * scale) / 2;
     const offsetY = (particleCanvas.height - imgHeight * scale) / 2;
 
-    // Use cached drawable pixels if available, otherwise collect them
-    if (!drawablePixels.length) {
-        drawablePixels = collectDrawablePixels(imageData);
-    }
+    // Collect drawable pixels
+    drawablePixels = collectDrawablePixels(imageData);
 
     // Create a color cache for better performance
     const colorCache = new Map();

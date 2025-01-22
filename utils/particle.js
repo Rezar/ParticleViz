@@ -1,11 +1,11 @@
 class Particle {
     constructor(x, y, z, color) {
-        this.x = x;
-        this.y = y;
+        this.x = x - particleCanvas.width / 2;
+        this.y = y - particleCanvas.height / 2;
         this.z = z;
         this.color = color;
-        this.originalX = x - particleCanvas.width / 2; // Store relative to center
-        this.originalY = y - particleCanvas.height / 2; // Store relative to center
+        this.originalX = this.x;
+        this.originalY = this.y;
         this.originalZ = z;
         this.returnSpeed = 0.05;
         this.angleXY = Math.random() * Math.PI * 2;
@@ -24,9 +24,10 @@ class Particle {
         const adjustedSize = particleSize / zScale;
 
         ctxParticle.save();
-        ctxParticle.translate(particleCanvas.width / 2, particleCanvas.height / 2);
 
-        // Apply opacity to the color
+        const screenX = this.x + particleCanvas.width / 2;
+        const screenY = this.y + particleCanvas.height / 2;
+
         const rgba = this.color.match(/[\d.]+/g);
         const color = `rgba(${rgba[0]}, ${rgba[1]}, ${rgba[2]}, ${particleOpacity})`;
         ctxParticle.fillStyle = color;
@@ -35,27 +36,27 @@ class Particle {
         switch (particleShape) {
             case 'circle':
                 ctxParticle.beginPath();
-                ctxParticle.arc(this.x, this.y, adjustedSize, 0, Math.PI * 2);
+                ctxParticle.arc(screenX, screenY, adjustedSize, 0, Math.PI * 2);
                 ctxParticle.closePath();
                 ctxParticle.fill();
                 break;
             case 'square':
                 ctxParticle.fillRect(
-                    this.x - adjustedSize,
-                    this.y - adjustedSize,
+                    screenX - adjustedSize,
+                    screenY - adjustedSize,
                     adjustedSize * 2,
                     adjustedSize * 2
                 );
                 break;
             case 'star':
-                this.drawStar(adjustedSize);
+                this.drawStar(screenX, screenY, adjustedSize);
                 break;
         }
 
         ctxParticle.restore();
     }
 
-    drawStar(size) {
+    drawStar(x, y, size) {
         const spikes = 5;
         const outerRadius = size;
         const innerRadius = size / 2;
@@ -64,10 +65,10 @@ class Particle {
         for (let i = 0; i < spikes * 2; i++) {
             const radius = i % 2 === 0 ? outerRadius : innerRadius;
             const angle = (i * Math.PI) / spikes;
-            const x = this.x + Math.cos(angle) * radius;
-            const y = this.y + Math.sin(angle) * radius;
-            if (i === 0) ctxParticle.moveTo(x, y);
-            else ctxParticle.lineTo(x, y);
+            const pointX = x + Math.cos(angle) * radius;
+            const pointY = y + Math.sin(angle) * radius;
+            if (i === 0) ctxParticle.moveTo(pointX, pointY);
+            else ctxParticle.lineTo(pointX, pointY);
         }
         ctxParticle.closePath();
         ctxParticle.fill();
