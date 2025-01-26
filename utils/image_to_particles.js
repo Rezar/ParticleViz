@@ -37,6 +37,7 @@ let autoRotationSpeed = 1; // Degrees per frame
 let linkNumber = 0;
 let linkOpacity = 0.2;
 let linkColor = '#FFFFFF';
+const clearancePadding = 500;
 
 
 // Event listener for Load Config - Natasya Liew
@@ -350,7 +351,12 @@ function animateParticles(currentTime) {
     const deltaTime = currentTime - lastTime;
     
     if (deltaTime > frameInterval) {
-        ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+        ctxParticle.clearRect(
+            -clearancePadding, 
+            -clearancePadding, 
+            particleCanvas.width + clearancePadding * 2, 
+            particleCanvas.height + clearancePadding * 2
+        );
         
         // If auto-rotating, update the UI slider to match the current rotation
         if (animationEffect === "rotate") {
@@ -373,26 +379,13 @@ function animateParticles(currentTime) {
     animationId = requestAnimationFrame(animateParticles);
 }
 
-function zoom(event, canvas, context) {
-    event.preventDefault();
-
-    const mouseX = event.offsetX;
-    const mouseY = event.offsetY;
-
-    const wheel = event.deltaY < 0 ? 1 : -1;
-    const zoom = Math.exp(wheel * 0.1);
-
-    context.translate(mouseX, mouseY);
-    context.scale(zoom, zoom);
-    context.translate(-mouseX, -mouseY);
-
-    scale *= zoom;
-
-    redrawCanvas(canvas, context);
-}
-
 function redrawCanvas(canvas, context) {
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.clearRect(
+        -clearancePadding, 
+        -clearancePadding, 
+        canvas.width + clearancePadding * 2, 
+        canvas.height + clearancePadding * 2
+    );
     context.fillStyle = 'red';
     context.fillRect(10, 10, 100, 100);
 }
@@ -499,8 +492,6 @@ shapeSelect.addEventListener('change', (e) => {
 rotationSlider.addEventListener('input', (e) => {
     rotationAngle = parseInt(e.target.value);
 });
-drawingCanvas.addEventListener('wheel', (event) => zoom(event, drawingCanvas, ctxDrawing));
-particleCanvas.addEventListener('wheel', (event) => zoom(event, particleCanvas, ctxParticle));
 animationEffectSelect.addEventListener('change', (e) => {
     animationEffect = e.target.value;
     if (animationEffect === "rotate") {

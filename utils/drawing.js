@@ -87,6 +87,7 @@ function getDrawingCoordinates(e) {
 function convertDrawingToParticles() {
     const imageData = ctxDrawing.getImageData(0, 0, drawingCanvas.width, drawingCanvas.height);
     lastImageData = imageData;
+    hideDropzone();
     createParticlesFromImage(imageData);
     drawingCanvas.style.display = 'none';
     drawingControls.classList.remove('active');

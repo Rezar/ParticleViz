@@ -88,11 +88,7 @@ particleCanvas.addEventListener('mouseout', stopPan);
 recenterCanvas.addEventListener('click', recenter);
 zoomIn.addEventListener('click', zoomInCanvas);
 zoomOut.addEventListener('click', zoomOutCanvas);
-
-// Event listeners for view controls
-recenterCanvas.addEventListener('click', recenter);
-zoomIn.addEventListener('click', zoomInCanvas);
-zoomOut.addEventListener('click', zoomOutCanvas);
+particleCanvas.addEventListener('wheel', (event) => zoom(event, ctxParticle));
 
 // Modified pan function
 function pan(event) {
@@ -104,13 +100,23 @@ function pan(event) {
     // Apply the complete transformation matrix
     ctxParticle.setTransform(zoomScale, 0, 0, zoomScale, panX, panY);
     ctxDrawing.setTransform(zoomScale, 0, 0, zoomScale, panX, panY);
+
+    // Redraw particles during pan to prevent frozen state
+    redrawParticles();
 }
 
 // Modified redrawParticles function
 function redrawParticles() {
     ctxParticle.save();
     ctxParticle.setTransform(1, 0, 0, 1, 0, 0);
-    ctxParticle.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+    
+    ctxParticle.clearRect(
+        -clearancePadding, 
+        -clearancePadding, 
+        particleCanvas.width + clearancePadding * 2, 
+        particleCanvas.height + clearancePadding * 2
+    );
+    
     ctxParticle.restore();
 
     // Redraw particles with current transformation
