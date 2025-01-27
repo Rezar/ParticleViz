@@ -92,3 +92,4 @@ npm install -g live-server
 ## Acknowledgments
 
 - [gif.js](https://github.com/jnordberg/gif.js) library for GIF creation
+- [flaticon](https://www.flaticon.com/free-icons/particles) Logo
