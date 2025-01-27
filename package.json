@@ -1,0 +1,41 @@
+{
+  "name": "particleviz",
+  "version": "1.0.0",
+  "description": "An interactive web application that converts images into dynamic particle animations with customizable effects and export capabilities.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder -mwl"
+  },
+  "build": {
+    "appId": "com.particleviz",
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icons/icon.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icons/icon.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icons/icon.png"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rezar/ParticleViz.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Rezar/ParticleViz/issues"
+  },
+  "homepage": "https://github.com/Rezar/ParticleViz#readme",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  }
+}
