@@ -9,10 +9,13 @@ An interactive web application that converts images into dynamic particle animat
 - **Drawing Mode**: Create custom drawings with two modes:
   - Freehand drawing
   - Polygon drawing tool
+    ![Polygon drawing mode on image](assets/documentation/Polygonmode_on.gif)
 
 ### Animation Effects
 - 360 Rotation: auto rotate the particle visualization in a 360 degree loop
+  ![360 Rotation image](assets/documentation/Rotation_Effect.gif)
 - Randomized Depth & Circular XY Movement: allow particles to float between closer and farther depths while also travelling in a circular pattern along the XY plane
+  ![Randomized Depth image](assets/documentation/RandomizedDepth.gif)
 
 ### Particle Customization
 - Color spectrum options (original, grayscale, random)
@@ -20,6 +23,7 @@ An interactive web application that converts images into dynamic particle animat
 
 ### Particle Link Customization
 - Control over particle link: count, opacity, color
+  ![Particle link Customization image](assets/documentation/ControloverParticleLinks.gif)
 
 ### Background Color Customization
 - Control over animation background color
@@ -43,6 +47,7 @@ Using the 'Load Config' and 'Save Config' buttons you can save and export the be
 - Zoom in/out functionality
 - Canvas recentering
 - Panning/dragging
+  ![Canvas controls image](assets/documentation/canvas_control.gif)
 
 ### Export Options
 - Export as GIF, HTML, WEBM, MP4, Frames
