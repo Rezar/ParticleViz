@@ -1,4 +1,4 @@
-# ParticleViz
+# ParticleViz <img src="assets/icons/icon-removebg.png" alt="ParticleViz Icon" width="40" align="top">
 
 An interactive web application that converts images into dynamic particle animations with customizable effects and export capabilities.
 
@@ -57,26 +57,21 @@ Using the 'Load Config' and 'Save Config' buttons you can save and export the be
   - Mobile (375x667)
   - Smartwatch (320x320)
 
-## Installation
 
-1. Clone the repository:
-```
-git clone https://github.com/bryceschultz/image_to_particles
-cd image_to_particles
-```
+## Access the App
 
-2. Download live-server if you dont already have it
-```
-npm install -g live-server
-```
+The most recent release is available at https://github.com/Rezar/ParticleViz as an electron app. <br/>
+The following architectures are currently supported:
+- Linux ARM64
+- Mac ARM64
+- Windows
+
+We are hoping to soon release it as a web app on Github pages as well.
 
 ## Usage
 
-1. **Start the application**:
-   - From the project root run
-   ```
-   live-server
-   ```
+1. **Access Methods**: 
+    - Access the app via the above documented sources (currently only released as an electron app)
 
 2. **Input Methods**:
    - Upload an image by dragging and dropping or using the file selector
@@ -93,6 +88,26 @@ npm install -g live-server
    - Choose export format (GIF/HTML/WEBM/MP4/Frames) and animation duration
    - Select target device dimensions
    - Wait for processing and download
+
+## Running Locally & Contributing 
+
+1. Clone the repository:
+```
+git clone https://github.com/Rezar/ParticleViz
+cd ParticleViz
+```
+
+2. Download live-server if you dont already have it
+```
+npm install -g live-server
+```
+3. Run live server from the base of the repo
+```
+live-server
+```
+
+4. Make any changes to the code as you see fit.
+5. Contributions are welcome! Please feel free to submit a Pull Request with your changes.
 
 ## Acknowledgments
 
