@@ -1,3 +1,43 @@
+/**
+ * ----------------------------------------------------------------------------
+ * FILE:        image_to_particles.js
+ * AUTHOR:      Bryce Schultz
+ * DATE:        11/30/2024
+ * DESCRIPTION:
+ * This JavaScript file manages the controls and configurations for particle
+ * animation settings. Users can modify speed, size, shape, opacity, and linking
+ * properties, as well as load and save configurations via JSON files.
+ *
+ * FEATURES:
+ * - Adjusts particle speed, size, dispersion, and shape dynamically.
+ * - Supports animation effects and auto-rotation of particles.
+ * - Allows loading and saving of configurations in JSON format.
+ * - Implements real-time color and opacity changes.
+ * - Uses debouncing to optimize user input handling.
+ *
+ * ----------------------------------------------------------------------------
+ * USAGE:
+ * Include this script in an HTML file with the following elements:
+ * ```html
+ * <input type="color" id="colorSelect">
+ * <input type="range" id="speedRange">
+ * <input type="range" id="dispersionRange">
+ * <input type="number" id="particleCount">
+ * <input type="range" id="sizeRange">
+ * <select id="shapeSelect">
+ * <button id="saveConfigButton">Save Config</button>
+ * <button id="loadConfigButton">Load Config</button>
+ * ```
+ *
+ * ----------------------------------------------------------------------------
+ * REVISION HISTORY:
+ * - 01/10/2025: Adding the Save/Load Config settings by Natasya Liew
+ * - 01/15/2025: Added more config features based on Natasya Liew's code by Bryce Schultz
+ * - 02/11/2025: Added 3-D features by YeRyoung Kim
+ * ----------------------------------------------------------------------------
+ */
+
+
 // Controls
 const colorSelect = document.getElementById('colorSelect');
 const speedRange = document.getElementById('speedRange');

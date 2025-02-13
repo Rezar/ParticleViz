@@ -66,7 +66,6 @@ The following architectures are currently supported:
 - Mac ARM64
 - Windows
 
-We are hoping to soon release it as a web app on Github pages as well.
 
 ## Usage
 
@@ -108,6 +107,36 @@ live-server
 
 4. Make any changes to the code as you see fit.
 5. Contributions are welcome! Please feel free to submit a Pull Request with your changes.
+
+## Access the Web App (GitHub Pages)
+
+You can access the latest version of **ParticleViz** as a web application via GitHub Pages:  
+🔗 [ParticleViz GitHub Pages](https://rezar.github.io/ParticleViz/)
+
+### **How to Use the Web App**
+1. Open the web app using the link above.
+2. Select an **input method**:
+   - **Upload an image**: Drag & drop or select an image to convert into particles.
+   - **Draw an image**: Switch to drawing mode and create custom shapes.
+3. Customize your animation using the **control panel**:
+   - Adjust **particle size, speed, dispersion, opacity, and shape**.
+   - Modify **background color** and **animation effects**.
+   - Configure **particle linking options**.
+4. Use **canvas controls** to:
+   - Zoom in/out.
+   - Pan and recenter the canvas.
+5. Export your animation:
+   - Click "Create GIF" and choose an export format (**GIF, HTML, WEBM, MP4, Frames**).
+   - Set animation duration and target **device size (Desktop, Mobile, Smartwatch)**.
+   - Download your generated file.
+
+### **Running Locally (Optional)**
+If you want to run the web app locally:
+```sh
+git clone https://github.com/Rezar/ParticleViz
+cd ParticleViz
+python3 -m http.server 8000  # Start a local web server
+```
 
 ## Acknowledgments
 

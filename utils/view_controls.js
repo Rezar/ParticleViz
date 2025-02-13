@@ -1,3 +1,43 @@
+/**
+ * ----------------------------------------------------------------------------
+ * FILE:        view_controls.js
+ * AUTHOR:      Bryce Schultz
+ * DATE:        11/30/2024
+ * DESCRIPTION:
+ * This JavaScript file provides zooming, panning, and recentering functionality 
+ * for a canvas-based particle simulation. Users can zoom in/out, drag to pan, 
+ * and reset the view to its original state.
+ *
+ * FEATURES:
+ * - Supports mouse wheel zooming with smooth transitions.
+ * - Allows panning by clicking and dragging.
+ * - Provides UI buttons for zooming and recentering the canvas.
+ * - Ensures transformations persist correctly across zoom and pan actions.
+ *
+ * ----------------------------------------------------------------------------
+ * USAGE:
+ * Include this script in an HTML file with the following elements:
+ * ```html
+ * <button id="recenterCanvas">Recenter</button>
+ * <button id="zoomIn">Zoom In</button>
+ * <button id="zoomOut">Zoom Out</button>
+ * <canvas id="drawingCanvas"></canvas>
+ * <canvas id="particleCanvas"></canvas>
+ * ```
+ * 
+ * Example Usage:
+ * ```javascript
+ * zoom(event, ctxParticle); // Zooms into the canvas
+ * recenter(); // Resets zoom and pan
+ * ```
+ *
+ * ----------------------------------------------------------------------------
+ * REVISION HISTORY:
+ *
+ * ----------------------------------------------------------------------------
+ */
+
+
 const viewControls = document.getElementById('viewControls');
 const recenterCanvas = document.getElementById('recenterCanvas');
 const zoomIn = document.getElementById('zoomIn');
