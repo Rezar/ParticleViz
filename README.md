@@ -113,22 +113,8 @@ live-server
 You can access the latest version of **ParticleViz** as a web application via GitHub Pages:  
 🔗 [ParticleViz GitHub Pages](https://rezar.github.io/ParticleViz/)
 
-### **How to Use the Web App**
-1. Open the web app using the link above.
-2. Select an **input method**:
-   - **Upload an image**: Drag & drop or select an image to convert into particles.
-   - **Draw an image**: Switch to drawing mode and create custom shapes.
-3. Customize your animation using the **control panel**:
-   - Adjust **particle size, speed, dispersion, opacity, and shape**.
-   - Modify **background color** and **animation effects**.
-   - Configure **particle linking options**.
-4. Use **canvas controls** to:
-   - Zoom in/out.
-   - Pan and recenter the canvas.
-5. Export your animation:
-   - Click "Create GIF" and choose an export format (**GIF, HTML, WEBM, MP4, Frames**).
-   - Set animation duration and target **device size (Desktop, Mobile, Smartwatch)**.
-   - Download your generated file.
+  ![GitPages Step 1](assets/documentation/Pages1.png)
+  ![GitPages Step 1](assets/documentation/Pages2.png)
 
 ### **Running Locally (Optional)**
 If you want to run the web app locally:
