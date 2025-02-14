@@ -1,4 +1,40 @@
-// Document references
+/**
+ * ----------------------------------------------------------------------------
+ * FILE:        drawing.js
+ * AUTHOR:      Bryce Schultz
+ * DATE:        11/30/2024
+ * DESCRIPTION:
+ * This JavaScript file handles drawing functionality for a web-based 
+ * canvas drawing tool. Users can switch between freehand drawing and 
+ * polygon drawing, save their drawings, and convert them into particles.
+ *
+ * FEATURES:
+ * - Handles user input via mouse for freehand and polygon drawing.
+ * - Provides undo, clear, and save options.
+ * - Converts drawings to particles for advanced visualization.
+ * - Supports URL-based input mode selection.
+ *
+ * ----------------------------------------------------------------------------
+ * USAGE:
+ * Include this script in an HTML file with the following elements:
+ * ```html
+ * <canvas id="drawingCanvas"></canvas>
+ * <canvas id="particleCanvas"></canvas>
+ * <input type="color" id="colorPickerBrush">
+ * <input type="range" id="brushSize" min="1" max="10">
+ * <button id="clearCanvas">Clear</button>
+ * <button id="convertDrawing">Convert to Particles</button>
+ * <button id="drawingModeSwitch">Toggle Drawing Mode</button>
+ * <button id="saveImage">Save Image</button>
+ * ```
+ *
+ * ----------------------------------------------------------------------------
+ * REVISION HISTORY:
+ * - 01/10/2025: Adding saving functionalities by Natasya Liew 
+ *
+ * ----------------------------------------------------------------------------
+ */
+
 const particleCanvas = document.getElementById('particleCanvas');
 const drawingCanvas = document.getElementById('drawingCanvas');
 const inputModeSelect = document.getElementById('inputModeSelect');

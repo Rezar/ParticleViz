@@ -1,3 +1,39 @@
+/**
+ * ----------------------------------------------------------------------------
+ * FILE:        drag_and_drop.js
+ * AUTHOR:      Bryce Schultz
+ * DATE:        <11/30/2024>
+ * DESCRIPTION:
+ * This JavaScript file provides drag-and-drop file handling functionality
+ * for an image upload system. It manages showing/hiding a dropzone and
+ * handling file input events.
+ *
+ * FEATURES:
+ * - Hides dropzone when an image is uploaded.
+ * - Shows dropzone when no image is present.
+ * - Supports drag-and-drop functionality for file selection.
+ *
+ * ----------------------------------------------------------------------------
+ * USAGE:
+ * Include this script in an HTML file with the following elements:
+ * ```html
+ * <div id="dropzone">Drop your file here</div>
+ * <input type="file" id="fileInput" accept="image/*" />
+ * ```
+ * 
+ * Ensure the `.container` class is present for drag-and-drop to work:
+ * ```html
+ * <div class="container">
+ *     <!-- Dropzone and file input elements -->
+ * </div>
+ * ```
+ *
+ * ----------------------------------------------------------------------------
+ * REVISION HISTORY:
+
+ * ----------------------------------------------------------------------------
+ */
+
 const dropzone = document.getElementById('dropzone');
 const container = document.querySelector('.container');
 const fileInput = document.getElementById('fileInput');

@@ -66,7 +66,6 @@ The following architectures are currently supported:
 - Mac ARM64
 - Windows
 
-We are hoping to soon release it as a web app on Github pages as well.
 
 ## Usage
 
@@ -108,6 +107,14 @@ live-server
 
 4. Make any changes to the code as you see fit.
 5. Contributions are welcome! Please feel free to submit a Pull Request with your changes.
+
+## Access the Web App (GitHub Pages)
+
+You can access the latest version of **ParticleViz** as a web application via GitHub Pages:  
+🔗 [ParticleViz GitHub Pages](https://rezar.github.io/ParticleViz/)
+
+  ![GitPages Step 1](assets/documentation/Pages1.png)
+  ![GitPages Step 1](assets/documentation/Pages2.png)
 
 ## Acknowledgments
 

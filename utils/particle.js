@@ -1,3 +1,37 @@
+/**
+ * ----------------------------------------------------------------------------
+ * FILE:        particle.js
+ * AUTHOR:      Bryce Schultz
+ * DATE:        11/30/2024
+ * DESCRIPTION:
+ * This JavaScript file defines the `Particle` class, which is used to generate 
+ * and animate particles in a 3D-like simulation. It supports rotation, 
+ * dispersion, randomized depth, and different particle shapes.
+ *
+ * FEATURES:
+ * - Supports multiple shapes: Circle, Square, and Star.
+ * - Simulates motion using orbit-based movement.
+ * - Implements animation effects including rotation and randomized depth.
+ * - Allows smooth transitions using easing functions.
+ * - Supports dynamic changes based on UI settings.
+ *
+ * ----------------------------------------------------------------------------
+ * USAGE:
+ * This class should be used as part of a **particle rendering system**.
+ * Example instantiation and usage:
+ * ```javascript
+ * const particle = new Particle(x, y, z, "rgba(255,255,255,1)");
+ * particle.draw();
+ * particle.update();
+ * ```
+ *
+ * ----------------------------------------------------------------------------
+ * REVISION HISTORY:
+ *
+ * ----------------------------------------------------------------------------
+ */
+
+
 class Particle {
     constructor(x, y, z, color) {
         this.x = x - particleCanvas.width / 2;

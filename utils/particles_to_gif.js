@@ -1,3 +1,43 @@
+/**
+ * ----------------------------------------------------------------------------
+ * FILE:        particles_to_fig.js
+ * AUTHOR:      Bryce Schultz
+ * DATE:        11/30/2024
+ * DESCRIPTION:
+ * This JavaScript file implements a GIF recording and exporting system.
+ * It captures animation frames and allows users to save them as GIF, MP4, WebM,
+ * HTML, or individual frames.
+ *
+ * FEATURES:
+ * - Records animation frames at a dynamically measured frame rate.
+ * - Allows users to configure duration and export format.
+ * - Supports multiple device dimensions (desktop, mobile, smartwatch).
+ * - Provides a modal interface for export settings.
+ * - Uses MediaRecorder API for MP4/WebM support.
+ *
+ * ----------------------------------------------------------------------------
+ * USAGE:
+ * Include this script in an HTML file with the following elements:
+ * ```html
+ * <button id="createGIFButton">Create GIF</button>
+ * <button id="exportButton">Export</button>
+ * <div id="recordingStatus">Recording...</div>
+ * <div id="progress-bar"></div>
+ * ```
+ * 
+ * Example Usage:
+ * ```javascript
+ * startRecording(); // Starts capturing animation frames
+ * ```
+ *
+ * ----------------------------------------------------------------------------
+ * REVISION HISTORY:
+ * - 01/10/2025: Added more export options by Natasya Liew
+ *
+ * ----------------------------------------------------------------------------
+ */
+
+
 // GIF Recording variables
 let isRecording = false;
 let recordingStartTime = 0;
