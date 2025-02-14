@@ -1,6 +1,6 @@
 # ParticleViz <img src="assets/icons/icon-removebg.png" alt="ParticleViz Icon" width="40" align="top">
 
-An interactive web application that converts images into dynamic particle animations with customizable effects and export capabilities.
+An interactive **web application** that converts images into dynamic particle animations with customizable effects and export capabilities.
 
 ## Features
 
