@@ -116,14 +116,6 @@ You can access the latest version of **ParticleViz** as a web application via Gi
   ![GitPages Step 1](assets/documentation/Pages1.png)
   ![GitPages Step 1](assets/documentation/Pages2.png)
 
-### **Running Locally (Optional)**
-If you want to run the web app locally:
-```sh
-git clone https://github.com/Rezar/ParticleViz
-cd ParticleViz
-python3 -m http.server 8000  # Start a local web server
-```
-
 ## Acknowledgments
 
 - [gif.js](https://github.com/jnordberg/gif.js) library for GIF creation
