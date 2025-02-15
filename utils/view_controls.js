@@ -162,3 +162,54 @@ function redrawParticles() {
     // Redraw particles with current transformation
     particlesArray.forEach(particle => particle.draw());
 }
+
+// Screen size detection and responsive messaging
+const MIN_WIDTH = 1000;
+const MIN_HEIGHT = 700;
+
+const isScreenTooSmall = () => window.innerWidth < MIN_WIDTH || window.innerHeight < MIN_HEIGHT;
+
+const handleScreenSize = () => {
+    const existingWarning = document.getElementById('screen-size-warning');
+    
+    if (isScreenTooSmall()) {
+        // Add a warning if there isn't one and the screen is too small
+        if (!existingWarning) {
+            const warning = document.createElement('div');
+            warning.id = 'screen-size-warning';
+            warning.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: #f8f9fa;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                text-align: center;
+                z-index: 9999;
+            `;
+            
+            warning.innerHTML = `
+                <h1 style="color: #1a1a1a;">ParticleViz</h1><br/><br/><br/>
+                <h2 style="color: #1a1a1a; margin-bottom: 15px;">Desktop View Required</h2>
+                <p style="color: #4a4a4a; max-width: 600px; line-height: 1.5;">
+                    This application is optimized for desktop use and requires a screen size of at least 
+                    ${MIN_WIDTH}x${MIN_HEIGHT} pixels. Please access from a larger screen for the best experience.
+                </p>
+            `;
+            
+            document.body.appendChild(warning);
+        }
+    } else if (existingWarning) {
+        // If the screen is not too small and there is a warning we remove it
+        existingWarning.remove();
+    }
+};
+
+// Add event listener and perform initial screen size check
+window.addEventListener('resize', handleScreenSize);
+handleScreenSize();
