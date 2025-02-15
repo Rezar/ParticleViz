@@ -2,6 +2,8 @@
 
 An interactive **web application** that converts images into dynamic particle animations with customizable effects and export capabilities.
 
+<br/>
+
 ## Features
 
 ### Input Methods
@@ -58,19 +60,14 @@ Using the 'Load Config' and 'Save Config' buttons you can save and export the be
   - Smartwatch (320x320)
 
 
-## Access the App
-
-The most recent release is available at https://github.com/Rezar/ParticleViz as an electron app. <br/>
-The following architectures are currently supported:
-- Linux ARM64
-- Mac ARM64
-- Windows
-
+<br/>
 
 ## Usage
 
 1. **Access Methods**: 
-    - Access the app via the above documented sources (currently only released as an electron app)
+    - Access the app via one of the below methods:
+      - [ParticleViz GitHub Pages](https://rezar.github.io/ParticleViz/)
+      - Electron app in the [most recent GitHub release](https://github.com/Rezar/ParticleViz/releases/latest).
 
 2. **Input Methods**:
    - Upload an image by dragging and dropping or using the file selector
@@ -87,6 +84,8 @@ The following architectures are currently supported:
    - Choose export format (GIF/HTML/WEBM/MP4/Frames) and animation duration
    - Select target device dimensions
    - Wait for processing and download
+
+<br/>
 
 ## Running Locally & Contributing 
 
@@ -108,6 +107,8 @@ live-server
 4. Make any changes to the code as you see fit.
 5. Contributions are welcome! Please feel free to submit a Pull Request with your changes.
 
+<br/>
+
 ## Access the Web App (GitHub Pages)
 
 You can access the latest version of **ParticleViz** as a web application via GitHub Pages:  
@@ -115,6 +116,18 @@ You can access the latest version of **ParticleViz** as a web application via Gi
 
   ![GitPages Step 1](assets/documentation/Pages1.png)
   ![GitPages Step 1](assets/documentation/Pages2.png)
+
+<br/>
+
+## Access the Electron App
+
+The most recent release is available at https://github.com/Rezar/ParticleViz/releases/latest as an electron app. <br/>
+The following architectures are currently supported:
+- Linux ARM64
+- Mac ARM64
+- Windows
+
+<br/>
 
 ## Acknowledgments
 
